@@ -1,0 +1,4183 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff4f9a">
+  <title>合成大嘉豪</title>
+  <style>
+    :root {
+      --ink: #21163b;
+      --deep: #15102b;
+      --paper: #fff4c9;
+      --cream: #ffeaa2;
+      --pink: #ff4f9a;
+      --hot: #ff3768;
+      --cyan: #4ee7ff;
+      --mint: #69f5c1;
+      --lemon: #ffe86a;
+      --orange: #ff9b42;
+      --purple: #a369ff;
+      --sky: #58a8ff;
+      --accent: #69f5c1;
+      --accent-2: #58a8ff;
+      --accent-3: #ffe86a;
+      --danger: #ff4a62;
+      --panel: #fff4c9;
+      --panel-ink: #21163b;
+      --shadow: 7px 7px 0 var(--ink);
+      --pixel: 4px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: #4f37c8;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+      background:
+        linear-gradient(125deg, #5829d9 0%, #ff4f9a 34%, #ff9b42 63%, #4ee7ff 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .24;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 7px, rgba(255,255,255,.18) 8px 9px),
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,.7) 0 2px, transparent 3px),
+        radial-gradient(circle at 80% 75%, rgba(255,255,255,.6) 0 2px, transparent 3px);
+      background-size: auto, 36px 36px, 52px 52px;
+      mix-blend-mode: soft-light;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto -10vw -20vh;
+      height: 50vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: .45;
+      background:
+        linear-gradient(90deg, transparent 0 6%, var(--cyan) 6% 12%, transparent 12% 18%, var(--pink) 18% 25%, transparent 25% 33%, var(--lemon) 33% 39%, transparent 39% 47%, var(--mint) 47% 55%, transparent 55% 63%, var(--purple) 63% 71%, transparent 71%);
+      clip-path: polygon(0 50%, 6% 36%, 11% 57%, 17% 24%, 24% 62%, 31% 38%, 39% 66%, 46% 30%, 54% 58%, 61% 23%, 69% 64%, 76% 36%, 83% 59%, 91% 29%, 100% 52%, 100% 100%, 0 100%);
+      filter: blur(2px);
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    textarea:focus-visible {
+      outline: 4px solid var(--lemon);
+      outline-offset: 4px;
+    }
+
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    #app {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 28px));
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 0 30px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 12px;
+      color: var(--paper);
+      background: rgba(33, 22, 59, .92);
+      border: 4px solid var(--ink);
+      box-shadow: 6px 6px 0 rgba(33,22,59,.4);
+      position: sticky;
+      top: 10px;
+      z-index: 30;
+      backdrop-filter: blur(8px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      position: relative;
+      flex: 0 0 auto;
+      background: var(--cyan);
+      border: 3px solid var(--paper);
+      box-shadow: 4px 4px 0 var(--pink);
+    }
+
+    .brand-mark::before,
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      background: var(--ink);
+    }
+
+    .brand-mark::before {
+      width: 20px;
+      height: 8px;
+      left: 7px;
+      top: 12px;
+      box-shadow: 0 11px 0 var(--ink);
+    }
+
+    .brand-mark::after {
+      width: 6px;
+      height: 6px;
+      left: 12px;
+      top: 13px;
+      background: var(--lemon);
+      box-shadow: 9px 0 0 var(--lemon), 0 11px 0 var(--pink), 9px 11px 0 var(--pink);
+    }
+
+    .brand-name {
+      display: block;
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 900;
+      letter-spacing: .06em;
+      white-space: nowrap;
+    }
+
+    .brand-sub {
+      display: block;
+      margin-top: 2px;
+      color: var(--mint);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 10px;
+      letter-spacing: .14em;
+      white-space: nowrap;
+    }
+
+    .hud {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .chapter-pill {
+      max-width: 240px;
+      padding: 7px 10px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .gauge-wrap {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .gauge-label {
+      color: var(--lemon);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .gauge {
+      display: grid;
+      grid-template-columns: repeat(7, 10px);
+      grid-auto-rows: 10px;
+      gap: 3px;
+      padding: 5px;
+      background: #0f0b23;
+      border: 2px solid var(--paper);
+    }
+
+    .gauge-cell {
+      width: 10px;
+      height: 10px;
+      background: #382857;
+      border: 1px solid rgba(255,255,255,.12);
+      transform-origin: center;
+    }
+
+    .gauge-cell.filled {
+      border-color: rgba(33,22,59,.8);
+      animation: gaugePop .36s steps(4, end);
+    }
+
+    .gauge-cell.current {
+      box-shadow: 0 0 0 2px var(--paper), 0 0 10px var(--lemon);
+    }
+
+    .gauge-count {
+      min-width: 46px;
+      color: var(--paper);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 900;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      flex: 0 0 auto;
+      color: var(--ink);
+      background: var(--cyan);
+      border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--pink);
+      font-size: 18px;
+      font-weight: 900;
+      transition: transform .08s steps(2, end), box-shadow .08s steps(2, end);
+    }
+
+    .icon-button[aria-pressed="false"] {
+      background: var(--purple);
+      color: var(--paper);
+    }
+
+    .icon-button:active {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 var(--pink);
+    }
+
+    #stage {
+      margin-top: 18px;
+      min-height: 620px;
+    }
+
+    .screen {
+      animation: screenIn .36s steps(5, end);
+    }
+
+    .pixel-panel {
+      position: relative;
+      background: var(--panel);
+      border: 4px solid var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .pixel-panel::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border: 2px dashed rgba(33,22,59,.16);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 4px 8px;
+      color: var(--ink);
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .mini-button {
+      position: relative;
+      min-height: 46px;
+      padding: 12px 18px;
+      border: 3px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--ink);
+      font-weight: 900;
+      text-align: center;
+      transition: transform .08s steps(2, end), box-shadow .08s steps(2, end), filter .12s;
+    }
+
+    .primary-button {
+      color: var(--ink);
+      background: var(--lemon);
+    }
+
+    .secondary-button {
+      color: var(--ink);
+      background: var(--cyan);
+    }
+
+    .mini-button {
+      min-height: 38px;
+      padding: 7px 11px;
+      box-shadow: 3px 3px 0 var(--ink);
+      font-size: 12px;
+      background: var(--paper);
+    }
+
+    .primary-button:hover,
+    .secondary-button:hover,
+    .mini-button:hover {
+      filter: brightness(1.06) saturate(1.12);
+      transform: translate(-1px, -1px);
+    }
+
+    .primary-button:active,
+    .secondary-button:active,
+    .mini-button:active {
+      transform: translate(5px, 5px);
+      box-shadow: 0 0 0 var(--ink);
+    }
+
+    .intro-screen {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(310px, .7fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      min-height: 520px;
+      padding: clamp(24px, 5vw, 58px);
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.16), transparent 38%),
+        var(--paper);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      right: -65px;
+      top: -65px;
+      background:
+        repeating-conic-gradient(from 0deg, var(--pink) 0 15deg, var(--lemon) 15deg 30deg);
+      border: 4px solid var(--ink);
+      animation: spin 22s steps(48, end) infinite;
+      opacity: .9;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 14px solid transparent;
+      border-image: repeating-linear-gradient(90deg, var(--cyan) 0 18px, var(--pink) 18px 36px, var(--lemon) 36px 54px) 14;
+      pointer-events: none;
+    }
+
+    .hero-kicker {
+      position: relative;
+      z-index: 2;
+      color: var(--ink);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .14em;
+    }
+
+    .game-title {
+      position: relative;
+      z-index: 2;
+      max-width: 720px;
+      margin: 18px 0 14px;
+      font-size: clamp(52px, 9vw, 108px);
+      font-weight: 900;
+      line-height: .9;
+      letter-spacing: -.08em;
+      text-shadow:
+        6px 6px 0 var(--cyan),
+        12px 12px 0 var(--ink);
+    }
+
+    .game-title span {
+      color: var(--pink);
+      -webkit-text-stroke: 3px var(--ink);
+    }
+
+    .hero-lead {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
+      margin: 28px 0 28px;
+      padding: 16px 18px;
+      background: var(--accent);
+      border: 3px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--ink);
+      font-size: clamp(16px, 2vw, 20px);
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hero-note {
+      max-width: 240px;
+      font-size: 12px;
+      line-height: 1.6;
+      opacity: .75;
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .avatar-panel {
+      padding: 18px;
+      background: var(--purple);
+      color: var(--paper);
+      min-height: 260px;
+    }
+
+    .avatar-panel canvas {
+      width: 100%;
+      max-height: 230px;
+      object-fit: contain;
+      filter: drop-shadow(8px 8px 0 rgba(33,22,59,.35));
+    }
+
+    .avatar-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: end;
+      margin-top: 8px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .rule-panel {
+      padding: 18px;
+      background: var(--lemon);
+    }
+
+    .rule-panel h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+
+    .rule-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .rule-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .rule-list b {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      background: var(--pink);
+      color: var(--paper);
+      border: 2px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .chapter-screen {
+      display: grid;
+      place-items: center;
+      min-height: 620px;
+      padding: 20px;
+    }
+
+    .chapter-card {
+      width: min(780px, 100%);
+      padding: clamp(28px, 6vw, 64px);
+      overflow: hidden;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.18), transparent 50%),
+        var(--accent);
+    }
+
+    .chapter-card::before {
+      content: ">>>";
+      position: absolute;
+      right: 20px;
+      bottom: -34px;
+      color: rgba(33,22,59,.08);
+      font-family: Consolas, monospace;
+      font-size: 180px;
+      font-weight: 900;
+      letter-spacing: -.2em;
+    }
+
+    .chapter-number {
+      position: relative;
+      z-index: 2;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .14em;
+    }
+
+    .chapter-title {
+      position: relative;
+      z-index: 2;
+      margin: 16px 0;
+      font-size: clamp(42px, 7vw, 76px);
+      line-height: 1;
+      letter-spacing: -.075em;
+      text-shadow: 4px 4px 0 var(--paper);
+    }
+
+    .chapter-tagline {
+      position: relative;
+      z-index: 2;
+      max-width: 620px;
+      margin: 0 0 26px;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.75;
+    }
+
+    .chapter-steps {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .chapter-step {
+      padding: 7px 10px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .story-screen {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .scene-card {
+      min-height: 580px;
+      overflow: hidden;
+      background: var(--accent-2);
+    }
+
+    .scene-header {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .scene-badge,
+    .level-badge {
+      padding: 6px 9px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .level-badge {
+      background: var(--lemon);
+    }
+
+    #storyCanvas {
+      width: 100%;
+      height: auto;
+      min-height: 100%;
+      object-fit: cover;
+    }
+
+    .scene-caption {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 16px;
+      z-index: 3;
+      padding: 11px 14px;
+      color: var(--paper);
+      background: rgba(33,22,59,.9);
+      border: 2px solid var(--paper);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    .dialog-card {
+      display: flex;
+      flex-direction: column;
+      padding: 22px;
+      background: var(--paper);
+    }
+
+    .speaker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 3px dashed rgba(33,22,59,.3);
+    }
+
+    .speaker-avatar {
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      background: var(--cyan);
+      border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--pink);
+    }
+
+    .speaker-name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .speaker-role {
+      margin: 3px 0 0;
+      font-family: Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: .08em;
+      opacity: .7;
+    }
+
+    .scene-title {
+      margin: 8px 0 10px;
+      font-size: clamp(25px, 3vw, 38px);
+      line-height: 1.15;
+      letter-spacing: -.04em;
+    }
+
+    .scene-copy {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 16px;
+      color: #3d2b5c;
+      font-size: 14px;
+      font-weight: 650;
+      line-height: 1.72;
+    }
+
+    .chat-lines {
+      display: grid;
+      gap: 7px;
+      margin: 4px 0 14px;
+    }
+
+    .chat-line {
+      width: fit-content;
+      max-width: 94%;
+      padding: 8px 11px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.5;
+    }
+
+    .chat-line:nth-child(2n) {
+      justify-self: end;
+      background: var(--cyan);
+    }
+
+    .choices {
+      display: grid;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .choice {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 58px;
+      padding: 9px 12px 9px 9px;
+      color: var(--ink);
+      background: #fff9df;
+      border: 3px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      text-align: left;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.48;
+      transition: transform .08s steps(2, end), box-shadow .08s steps(2, end), background .12s;
+    }
+
+    .choice-key {
+      display: grid;
+      place-items: center;
+      width: 33px;
+      height: 33px;
+      color: var(--paper);
+      background: var(--purple);
+      border: 2px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .choice:hover {
+      background: var(--lemon);
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0 var(--ink);
+    }
+
+    .choice:active {
+      transform: translate(4px, 4px);
+      box-shadow: 0 0 0 var(--ink);
+    }
+
+    .choice.wrong {
+      background: #ffb1c2;
+      animation: shake .26s steps(3, end) 2;
+    }
+
+    .choice.correct {
+      background: var(--mint);
+      box-shadow: 0 0 0 var(--ink), 0 0 0 5px var(--lemon);
+    }
+
+    .choice:disabled {
+      cursor: default;
+      opacity: .72;
+    }
+
+    .choice:disabled:hover {
+      transform: none;
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+
+    .feedback {
+      min-height: 50px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      color: var(--paper);
+      background: var(--ink);
+      border: 2px solid var(--ink);
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+    .feedback.good {
+      color: var(--ink);
+      background: var(--lemon);
+    }
+
+    .feedback.bad {
+      animation: shake .2s steps(3, end) 2;
+    }
+
+    .challenge-intro {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(320px, 1.1fr);
+      gap: 18px;
+      min-height: 580px;
+    }
+
+    .challenge-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0 12px, transparent 12px 24px),
+        var(--accent);
+      min-height: 420px;
+    }
+
+    .challenge-glyph {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: min(300px, 72%);
+      aspect-ratio: 1;
+      color: var(--paper);
+      background: var(--pink);
+      border: 8px solid var(--ink);
+      box-shadow: 16px 16px 0 var(--ink), inset 0 0 0 7px var(--lemon);
+      font-family: Consolas, "Microsoft YaHei", monospace;
+      font-size: clamp(68px, 12vw, 132px);
+      font-weight: 900;
+      text-shadow: 6px 6px 0 var(--ink);
+      transform: rotate(-4deg);
+    }
+
+    .challenge-copy-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(24px, 5vw, 52px);
+      background: var(--paper);
+    }
+
+    .challenge-copy-card h2 {
+      margin: 14px 0 12px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: -.06em;
+    }
+
+    .challenge-copy-card p {
+      margin: 0 0 16px;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.75;
+    }
+
+    .challenge-hints {
+      display: grid;
+      gap: 8px;
+      margin: 6px 0 26px;
+    }
+
+    .challenge-hint {
+      padding: 9px 11px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .game-screen {
+      display: grid;
+      gap: 12px;
+    }
+
+    .game-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      color: var(--paper);
+      background: var(--ink);
+      border: 3px solid var(--ink);
+    }
+
+    .game-name {
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .timer {
+      color: var(--lemon);
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .booth-wrap {
+      position: relative;
+      min-height: 500px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(255,255,255,.3) 0 8px, transparent 9px),
+        linear-gradient(135deg, #ff67b1, #ffb447 45%, #53d9ff);
+      border: 5px solid var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .booth {
+      position: absolute;
+      inset: 50px 6% 38px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.14) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(255,255,255,.12) 50%, transparent 50%),
+        #5f3bcc;
+      background-size: 34px 34px;
+      border: 7px solid var(--ink);
+      box-shadow: inset 0 0 0 8px var(--cyan), 10px 10px 0 rgba(33,22,59,.35);
+      overflow: hidden;
+    }
+
+    .booth::before {
+      content: "CLICK THE NOTES!";
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 10px;
+      color: var(--ink);
+      background: var(--lemon);
+      border: 2px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .note-button {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: clamp(60px, 8vw, 82px);
+      height: clamp(60px, 8vw, 82px);
+      color: var(--ink);
+      background: var(--lemon);
+      border: 5px solid var(--ink);
+      box-shadow: 6px 6px 0 var(--pink);
+      font-family: Georgia, serif;
+      font-size: clamp(27px, 4vw, 42px);
+      font-weight: 900;
+      animation: noteBob .72s steps(3, end) infinite alternate;
+      touch-action: manipulation;
+    }
+
+    .note-button:nth-of-type(2n) {
+      color: var(--paper);
+      background: var(--pink);
+      box-shadow: 6px 6px 0 var(--cyan);
+    }
+
+    .note-button:nth-of-type(3n) {
+      background: var(--mint);
+      box-shadow: 6px 6px 0 var(--purple);
+    }
+
+    .note-button.hit {
+      pointer-events: none;
+      animation: noteHit .32s steps(5, end) forwards;
+    }
+
+    .booth-bottom {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      padding: 6px 14px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .game-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(33,22,59,.82);
+      text-align: center;
+    }
+
+    .overlay-card {
+      width: min(440px, 100%);
+      padding: 26px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 4px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .overlay-card h2 {
+      margin: 0 0 12px;
+      font-size: 32px;
+    }
+
+    .overlay-card p {
+      margin: 0 0 20px;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    .skate-frame {
+      position: relative;
+      overflow: hidden;
+      border: 5px solid var(--ink);
+      box-shadow: var(--shadow);
+      background: var(--sky);
+      touch-action: none;
+    }
+
+    #skateCanvas {
+      width: 100%;
+      height: auto;
+    }
+
+    .skate-hud {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .skate-chip {
+      padding: 6px 9px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .skate-controls {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .lane-button {
+      width: 72px;
+      height: 46px;
+      color: var(--ink);
+      background: var(--lemon);
+      border: 3px solid var(--ink);
+      box-shadow: 4px 4px 0 var(--ink);
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .wire-board {
+      position: relative;
+      min-height: 540px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,.25), transparent 30%),
+        linear-gradient(150deg, #8c5cff, #f04f9e 50%, #ff9d4d);
+      border: 5px solid var(--ink);
+      box-shadow: var(--shadow);
+      touch-action: none;
+    }
+
+    .projector {
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      width: min(480px, 62%);
+      transform: translateX(-50%);
+    }
+
+    .projector-body {
+      position: relative;
+      height: 180px;
+      background: #2d2360;
+      border: 6px solid var(--ink);
+      box-shadow: inset 0 0 0 7px var(--cyan);
+    }
+
+    .projector-screen {
+      position: absolute;
+      inset: 18px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      color: var(--paper);
+      background: #1a171f;
+      border: 3px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .projector-screen.on {
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, var(--cyan) 0 25%, var(--lemon) 25% 50%, var(--orange) 50% 75%, var(--pink) 75%);
+      animation: rainbowJolt .5s steps(2, end) 2;
+    }
+
+    .projector-stand {
+      width: 90px;
+      height: 48px;
+      margin: 0 auto;
+      background: #4a318b;
+      border: 5px solid var(--ink);
+      border-top: 0;
+    }
+
+    .port-row {
+      position: absolute;
+      left: 50%;
+      top: 240px;
+      display: flex;
+      justify-content: center;
+      gap: clamp(16px, 5vw, 56px);
+      width: 100%;
+      transform: translateX(-50%);
+    }
+
+    .port {
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      width: 94px;
+      height: 86px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 5px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .port span {
+      font-family: Consolas, monospace;
+      font-size: 25px;
+      line-height: 1;
+    }
+
+    .port.active {
+      background: var(--mint);
+      box-shadow: 0 0 0 6px var(--lemon), 5px 5px 0 var(--ink);
+    }
+
+    .cable {
+      position: absolute;
+      z-index: 8;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      align-items: center;
+      gap: 8px;
+      min-width: 132px;
+      min-height: 58px;
+      padding: 8px 10px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 4px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--ink);
+      font-size: 11px;
+      font-weight: 900;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .cable::before {
+      content: "";
+      position: absolute;
+      left: -54px;
+      top: 50%;
+      width: 56px;
+      height: 9px;
+      background: var(--cable-color, var(--cyan));
+      border: 3px solid var(--ink);
+      transform: translateY(-50%);
+    }
+
+    .cable-symbol {
+      display: grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      background: var(--cable-color, var(--cyan));
+      border: 2px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 18px;
+    }
+
+    .cable.dragging {
+      z-index: 30;
+      transform: scale(1.06) rotate(-1deg);
+      box-shadow: 8px 8px 0 var(--pink);
+    }
+
+    .cable.wrong {
+      animation: shake .2s steps(3, end) 2;
+    }
+
+    .cable.connected {
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .checkin-screen {
+      display: grid;
+      grid-template-columns: minmax(320px, .85fr) minmax(0, 1.15fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .photo-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(18px, 4vw, 38px);
+      background: var(--accent);
+    }
+
+    .photo-frame {
+      position: relative;
+      padding: 14px 14px 44px;
+      background: #fff7d8;
+      border: 5px solid var(--ink);
+      box-shadow: 10px 10px 0 var(--ink);
+      transform: rotate(-1.5deg);
+    }
+
+    .photo-frame::before,
+    .photo-frame::after {
+      content: "";
+      position: absolute;
+      width: 82px;
+      height: 26px;
+      top: -13px;
+      background: var(--lemon);
+      border: 2px solid var(--ink);
+      opacity: .9;
+    }
+
+    .photo-frame::before {
+      left: 18px;
+      transform: rotate(-6deg);
+    }
+
+    .photo-frame::after {
+      right: 18px;
+      transform: rotate(5deg);
+      background: var(--cyan);
+    }
+
+    #snapshotCanvas {
+      width: 100%;
+      height: auto;
+      background: var(--purple);
+      border: 3px solid var(--ink);
+    }
+
+    .photo-stamp {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 11px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: #45315e;
+      font-family: Consolas, monospace;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .photo-note {
+      margin-top: 24px;
+      padding: 12px;
+      color: var(--paper);
+      background: var(--ink);
+      border: 2px solid var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      background: var(--paper);
+    }
+
+    .chat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .chat-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .chat-online {
+      color: var(--ink);
+      background: var(--mint);
+      border: 2px solid var(--ink);
+      padding: 4px 7px;
+      font-family: Consolas, monospace;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .chat-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      max-height: 290px;
+      min-height: 170px;
+      margin: 14px 0;
+      padding: 12px;
+      overflow-y: auto;
+      background: #fff9df;
+      border: 3px solid var(--ink);
+    }
+
+    .bubble {
+      width: fit-content;
+      max-width: 92%;
+      padding: 8px 10px;
+      background: #e5d9ff;
+      border: 2px solid var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+      animation: bubbleIn .24s steps(3, end);
+    }
+
+    .bubble.mine {
+      align-self: flex-end;
+      background: var(--mint);
+    }
+
+    .bubble .who {
+      display: block;
+      margin-bottom: 3px;
+      color: #72589b;
+      font-family: Consolas, monospace;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .caption-wrap {
+      margin-top: auto;
+    }
+
+    .caption-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .caption-input {
+      width: 100%;
+      min-height: 88px;
+      padding: 12px;
+      color: var(--ink);
+      background: #fff9df;
+      border: 3px solid var(--ink);
+      box-shadow: inset 4px 4px 0 rgba(33,22,59,.08);
+      resize: vertical;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .caption-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 9px 0 12px;
+    }
+
+    .caption-chip {
+      padding: 6px 8px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .caption-error {
+      min-height: 18px;
+      margin: 8px 0 0;
+      color: var(--danger);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .checkin-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .success-screen {
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 50% 25%, rgba(255,255,255,.35), transparent 35%),
+        var(--accent);
+      border: 5px solid var(--ink);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .success-card {
+      width: min(620px, 100%);
+      padding: clamp(26px, 6vw, 58px);
+      background: var(--paper);
+      border: 4px solid var(--ink);
+      box-shadow: 9px 9px 0 var(--ink);
+    }
+
+    .success-card h2 {
+      margin: 10px 0;
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 1;
+      letter-spacing: -.06em;
+    }
+
+    .success-card p {
+      margin: 0 auto 22px;
+      max-width: 480px;
+      font-size: 15px;
+      font-weight: 750;
+      line-height: 1.7;
+    }
+
+    .synth-screen {
+      position: relative;
+      min-height: 620px;
+      overflow: hidden;
+      background: #241343;
+      border: 5px solid var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    #synthCanvas {
+      width: 100%;
+      height: auto;
+      min-height: 620px;
+    }
+
+    .synth-overlay {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      z-index: 4;
+      width: min(720px, calc(100% - 36px));
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .synth-end-card {
+      padding: 22px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 4px solid var(--ink);
+      box-shadow: 8px 8px 0 var(--pink);
+      text-align: center;
+      pointer-events: auto;
+      animation: bubbleIn .4s steps(4, end);
+    }
+
+    .synth-end-card h2 {
+      margin: 5px 0 6px;
+      font-size: clamp(30px, 5vw, 52px);
+      letter-spacing: -.05em;
+    }
+
+    .synth-end-card p {
+      margin: 0 auto 14px;
+      max-width: 560px;
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.65;
+    }
+
+    .synth-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 7px;
+      margin: 12px 0 16px;
+    }
+
+    .synth-tag {
+      padding: 5px 8px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      font-family: Consolas, monospace;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      z-index: 100;
+      max-width: calc(100% - 28px);
+      padding: 11px 16px;
+      color: var(--ink);
+      background: var(--lemon);
+      border: 3px solid var(--ink);
+      box-shadow: 5px 5px 0 var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+      transform: translate(-50%, 30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .18s steps(3, end), opacity .18s steps(3, end);
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    .screen-flash {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      pointer-events: none;
+      background: #fff8cf;
+      animation: flashOut .34s steps(5, end) forwards;
+    }
+
+    .confetti {
+      position: fixed;
+      z-index: 95;
+      width: 9px;
+      height: 9px;
+      background: var(--confetti-color, var(--pink));
+      border: 1px solid var(--ink);
+      pointer-events: none;
+      animation: confettiBurst .75s cubic-bezier(.2,.8,.3,1) forwards;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @keyframes screenIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(8px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes gaugePop {
+      0% { transform: scale(.3); }
+      60% { transform: scale(1.5); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+    }
+
+    @keyframes noteBob {
+      from { translate: 0 0; }
+      to { translate: 0 -9px; }
+    }
+
+    @keyframes noteHit {
+      0% { opacity: 1; transform: scale(1); }
+      55% { opacity: 1; transform: scale(1.5) rotate(12deg); }
+      100% { opacity: 0; transform: scale(.1) rotate(40deg); }
+    }
+
+    @keyframes rainbowJolt {
+      0% { filter: hue-rotate(0deg) brightness(1); }
+      50% { filter: hue-rotate(90deg) brightness(1.2); }
+      100% { filter: hue-rotate(0deg) brightness(1); }
+    }
+
+    @keyframes flashOut {
+      from { opacity: .92; }
+      to { opacity: 0; }
+    }
+
+    @keyframes confettiBurst {
+      from { opacity: 1; transform: translate(0,0) rotate(0); }
+      to { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(240deg); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 880px) {
+      #app {
+        width: min(100% - 18px, 760px);
+        padding-top: 9px;
+      }
+
+      .topbar {
+        top: 5px;
+        gap: 9px;
+        padding: 8px;
+      }
+
+      .brand-sub,
+      .chapter-pill {
+        display: none;
+      }
+
+      .hud {
+        gap: 8px;
+      }
+
+      .gauge {
+        grid-template-columns: repeat(7, 8px);
+        grid-auto-rows: 8px;
+        gap: 2px;
+        padding: 4px;
+      }
+
+      .gauge-cell {
+        width: 8px;
+        height: 8px;
+      }
+
+      .gauge-label {
+        display: none;
+      }
+
+      .gauge-count {
+        min-width: 38px;
+        font-size: 10px;
+      }
+
+      .icon-button {
+        width: 36px;
+        height: 36px;
+      }
+
+      .intro-screen,
+      .story-screen,
+      .challenge-intro,
+      .checkin-screen {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        min-height: 500px;
+      }
+
+      .hero-side {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .scene-card {
+        min-height: 360px;
+      }
+
+      .dialog-card {
+        min-height: 470px;
+      }
+
+      .challenge-art {
+        min-height: 300px;
+      }
+
+      .booth-wrap {
+        min-height: 440px;
+      }
+
+      .wire-board {
+        min-height: 500px;
+      }
+
+      .projector {
+        width: 72%;
+      }
+
+      .photo-column {
+        padding: 20px;
+      }
+
+      .photo-frame {
+        width: min(520px, 100%);
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .brand-name {
+        font-size: 14px;
+      }
+
+      .brand-mark {
+        width: 31px;
+        height: 31px;
+      }
+
+      .brand-mark::before {
+        left: 5px;
+        top: 9px;
+      }
+
+      .hero-card {
+        min-height: 550px;
+        padding: 24px 20px;
+      }
+
+      .game-title {
+        font-size: clamp(44px, 16vw, 72px);
+      }
+
+      .hero-side {
+        grid-template-columns: 1fr;
+      }
+
+      .scene-card {
+        min-height: 310px;
+      }
+
+      .dialog-card,
+      .chat-card {
+        padding: 16px;
+      }
+
+      .choice {
+        grid-template-columns: 31px 1fr;
+        font-size: 12px;
+      }
+
+      .choice-key {
+        width: 30px;
+        height: 30px;
+      }
+
+      .booth-wrap {
+        min-height: 390px;
+      }
+
+      .booth {
+        inset: 46px 4% 34px;
+      }
+
+      .note-button {
+        width: 56px;
+        height: 56px;
+        border-width: 4px;
+      }
+
+      .wire-board {
+        min-height: 490px;
+      }
+
+      .projector {
+        width: 78%;
+      }
+
+      .projector-body {
+        height: 150px;
+      }
+
+      .port-row {
+        top: 214px;
+        gap: 10px;
+      }
+
+      .port {
+        width: 82px;
+        height: 76px;
+      }
+
+      .cable {
+        min-width: 112px;
+        grid-template-columns: 28px 1fr;
+        font-size: 10px;
+      }
+
+      .cable::before {
+        left: -34px;
+        width: 36px;
+      }
+
+      .synth-screen,
+      #synthCanvas {
+        min-height: 520px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>
+          <span class="brand-name">合成大嘉豪</span>
+          <span class="brand-sub">COURSE PROJECT WEEK // 21 SHARDS</span>
+        </span>
+      </div>
+      <div class="hud">
+        <div class="chapter-pill" id="chapterPill">第一章 · 环境还没配好</div>
+        <div class="gauge-wrap">
+          <span class="gauge-label">豪意值</span>
+          <div class="gauge" id="gauge" role="progressbar" aria-label="豪意值" aria-valuemin="0" aria-valuemax="21" aria-valuenow="0"></div>
+          <span class="gauge-count" id="gaugeCount">0 / 21</span>
+        </div>
+        <button class="icon-button" id="soundButton" type="button" aria-pressed="true" aria-label="关闭声音">♪</button>
+      </div>
+    </header>
+    <main id="stage" aria-live="polite"></main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <noscript>需要启用 JavaScript 才能运行游戏。</noscript>
+  <script>
+    "use strict";
+
+    const CHAPTERS = [
+      {
+        id: 0,
+        number: "CHAPTER 01",
+        title: "第一章 · 环境还没配好",
+        short: "环境还没配好",
+        tagline: "课程设计刚分组，聊天记录已经开始运行不正常。",
+        accent: "#69f5c1",
+        accent2: "#58a8ff",
+        accent3: "#ffe86a",
+        pop: "#ff4f9a",
+        challenge: {
+          name: "商场拍拍机",
+          glyph: "♪",
+          description: "嘉豪最近迷上了研究商场拍照机的隐藏反应模式。屏幕会出现 5 个彩色音符，全部点中才算完成一次民间机台测评。",
+          hints: ["15 秒内点完 5 个音符", "每次点击都有音效和轻震动", "漏掉可以马上重试"]
+        },
+        hobby: "研究商场拍照机的隐藏反应模式",
+        captions: [
+          "普通拍照机而已，只是我刚好懂它的隐藏模式。",
+          "这项测试没什么意义，主要是不想浪费我的反应力。",
+          "商场设备测评第七期：画面一般，难度也一般。"
+        ],
+        replies: [
+          ["群友", "你管这个叫反应力训练？"],
+          ["商场店员", "同学，你是不是来应聘维护员的？"],
+          ["舍友", "照片挺清楚，爱好还是没看懂。"]
+        ],
+        replyPreview: "照片挺清楚，爱好还是没看懂。"
+      },
+      {
+        id: 1,
+        number: "CHAPTER 02",
+        title: "第二章 · 在我电脑上能跑",
+        short: "在我电脑上能跑",
+        tagline: "项目进入包装阶段，性能和自我认知开始分头优化。",
+        accent: "#ffb84d",
+        accent2: "#55d8ff",
+        accent3: "#ff6b9e",
+        pop: "#69f5c1",
+        challenge: {
+          name: "校园轮滑",
+          glyph: "↗",
+          description: "嘉豪的小众爱好是拍校园外卖车的涂装。为了追上一辆画着蜜蜂的外卖车，他换上了轮滑鞋。",
+          hints: ["坚持 20 秒即可通过", "左右滑动或使用方向键换道", "当心追着蜜蜂外卖车狂奔的同学"]
+        },
+        hobby: "拍摄校园外卖车涂装",
+        captions: [
+          "今天又拍到一辆蜜蜂涂装，校园车文化比想象中丰富。",
+          "为了这张照片，我顺便完成了一次路线勘测。",
+          "外卖车只是通勤工具，涂装才是它的灵魂。"
+        ],
+        replies: [
+          ["同组同学", "所以你为了拍外卖车，专门穿了轮滑鞋？"],
+          ["外卖车师傅", "蜜蜂是画的，我没有欠你工资。"],
+          ["班长", "这个爱好建议不要在行政楼门口实践。"]
+        ],
+        replyPreview: "这个爱好建议不要在行政楼门口实践。"
+      },
+      {
+        id: 2,
+        number: "CHAPTER 03",
+        title: "第三章 · 这个结果符合预期",
+        short: "这个结果符合预期",
+        tagline: "答辩开始，投影仪和嘉豪的自信同时接受稳定性测试。",
+        accent: "#a777ff",
+        accent2: "#50e3ff",
+        accent3: "#ff9b42",
+        pop: "#ff5d9e",
+        challenge: {
+          name: "机房接线救场",
+          glyph: "⚡",
+          description: "投影突然黑屏。嘉豪终于等到自己的冷门爱好派上用场：研究设备接线，并给每一次成功接驳拍照留念。",
+          hints: ["20 秒内接好三根线", "颜色和图标都可以帮助辨认", "插错时线头会弹回来"]
+        },
+        hobby: "研究设备接线并拍照归档",
+        captions: [
+          "终于有人认可我的三线接法了。",
+          "设备调试只是表象，接线审美才是重点。",
+          "项目答辩第九张：电源、显示、网络，缺一不可。"
+        ],
+        replies: [
+          ["班长", "你给投影接线还拍照存档？"],
+          ["助教", "这是兴趣爱好，还是故障记录？"],
+          ["老师", "第一次见有人用答辩现场更新作品集。"]
+        ],
+        replyPreview: "第一次见有人用答辩现场更新作品集。"
+      }
+    ];
+
+    const LEVELS = [
+      {
+        id: 1, chapter: 0, title: "班级群的焦虑", art: "phone", tag: "roast",
+        lines: ["手机屏幕上，班级群的消息一条条弹出。每个人都卡在计算机课的不同章节，气氛逐渐统一。"],
+        messages: ["计算机系统真学不动。", "实验三环境还没装好。", "要焦虑了。"],
+        options: [
+          "先别急，我把环境配置整理成文档，晚上一起跑。",
+          "［心想：我也卡在依赖上。］关掉群聊，继续查官方文档。",
+          "这也能焦虑？猪头看两眼都能跑通。编程语言我早学完了，国外版 ChatGPT 平时拿来审代码。"
+        ],
+        feedback: ["群里安静了八秒。", "登录页弹出提示：该账号已停用。"]
+      },
+      {
+        id: 2, chapter: 0, title: "机房里的舍友", art: "lab", tag: "chuuni",
+        lines: ["老师正在批评嘉豪的舍友上课说话。机房里安静下来，只剩风扇和键盘在继续运行。"],
+        messages: [],
+        options: [
+          "碰一下舍友，让他先别说了。",
+          "盯住电脑屏幕，假装没听见。",
+          "扭头压低声音：“再吵就杀了你。”"
+        ],
+        feedback: ["舍友默默把椅子挪开二十厘米。", "老师正好喊到嘉豪，他立刻坐直：“到。”"]
+      },
+      {
+        id: 3, chapter: 0, title: "依赖冲突", art: "dependency", tag: "know",
+        lines: ["组员在群里发来一张报错截图。电脑里的软件已经装了三遍，还是不肯正常工作。"],
+        messages: ["又装失败了。", "我已经把能点的按钮全点了一遍。"],
+        options: [
+          "先别急，我照着教程陪你重装一遍。",
+          "把报错发全，我帮你看看是不是点错了。",
+          "装个软件这么费劲？我平时都用实验室的电脑，自己这台根本不碰。"
+        ],
+        feedback: ["他所说的服务器，是宿舍里贴着师兄名字的旧主机。", "开机以后，风扇先响十秒。"]
+      },
+      {
+        id: 4, chapter: 0, title: "Git 冲突", art: "git", tag: "know",
+        lines: ["小组作业里，有人把大家改过的东西覆盖了。屏幕上多出一排红色提示，像在礼貌地拒绝所有人。"],
+        messages: ["是不是全没了？", "等一下，先别继续传！"],
+        options: [
+          "先别动，我再把之前那一版找回来。",
+          "先复制一份，确认没问题再接着改。",
+          "你们还敢直接覆盖？我电脑里的东西都是自动备份的，想丢都难。"
+        ],
+        feedback: ["远程仓库弹出十二个冲突。", "提交记录里躺着：final_final_真正最终版。"]
+      },
+      {
+        id: 5, chapter: 0, title: "小组分工", art: "team", tag: "roast",
+        lines: ["项目进入分工阶段。组员问：“后端和现场展示谁负责？”嘉豪把椅子转过来，像已经拿到了最终解释权。"],
+        messages: [],
+        options: [
+          "我先把能交差的部分做出来，剩下的再分。",
+          "我负责做页面，你们晚上把内容发我就行。",
+          "写代码和上台都交给我，按我的说法来，别临时改。"
+        ],
+        feedback: ["他的接口文档只有一个 /hello。", "演示页面里的数据全是写死的。"]
+      },
+      {
+        id: 6, chapter: 1, title: "机房里的键盘", art: "keyboard", tag: "chuuni",
+        lines: ["电脑课上，同学们正在修改文档。嘉豪坐下，随手敲了几下键盘，表情像刚发现一颗坏轴。"],
+        messages: [],
+        options: [
+          "换成触控板慢慢改，能做完就行。",
+          "挪到角落里，免得键盘声吵到别人。",
+          "喃喃自语：“机房的键盘真卡手。”"
+        ],
+        feedback: ["嘉豪劈里啪啦大声敲键盘。", "他高燃地编辑 Word 文档，成功引来了全班同学的侧目。"]
+      },
+      {
+        id: 7, chapter: 1, title: "GitHub 开源", art: "github", tag: "know",
+        lines: ["组员兴奋地说：“咱们仓库有五颗星了。”嘉豪没有抬头，但显示器反光里能看见他正在调整坐姿。"],
+        messages: [],
+        options: [
+          "不错，先把说明写清楚，别让人点进来就迷路。",
+          "发我链接，我帮你提两个意见。",
+          "几个星有什么好看的，我现在只做国外的人会看的项目。"
+        ],
+        feedback: ["仓库公开三天，只有一份 README。", "唯一一个 issue 是他自己提的：“求 star”。"]
+      },
+      {
+        id: 8, chapter: 1, title: "校园网掉线", art: "wifi", tag: "know",
+        lines: ["上课前，组员急着下载一个安装包。校园网在进度条到 97% 时准时断开。"],
+        messages: ["谁有热点？", "就差最后一点了。"],
+        options: [
+          "先开我热点，别耽误上课。",
+          "我 U 盘里有安装包，用这个。",
+          "学校网络我基本不用，我平时都走实验室的网，这个我还真用不上。"
+        ],
+        feedback: ["他举着手机在窗边找信号。", "状态栏显示：2G。"]
+      },
+      {
+        id: 9, chapter: 1, title: "电脑排队", art: "gpu", tag: "roast",
+        lines: ["同学说实验室电脑全被占着，今天的作业跑不完了。嘉豪看了一眼自己的轻薄本。"],
+        messages: [],
+        options: [
+          "先把设置调低一点，能跑完就行。",
+          "问一下师兄晚上有没有空出来的电脑。",
+          "算力不是问题。我这电脑什么都能跑，好机器留给不会用的人。"
+        ],
+        feedback: ["笔记本风扇开始起飞。", "训练日志显示：预计完成时间 11 小时 47 分。"]
+      },
+      {
+        id: 10, chapter: 1, title: "实习简历", art: "resume", tag: "know",
+        lines: ["班级群里，有人问课程项目怎么写进简历。嘉豪打开了那个只有三个页面的项目主页。"],
+        messages: ["项目经历要量化吗？", "我现在只会写“参与了开发”。"],
+        options: [
+          "写清楚你负责了哪块，最后做成什么样。",
+          "按岗位要求挑相关经历写。",
+          "课程项目就得写成自己从零做的。我一般只写有多难，细节面试再说。"
+        ],
+        feedback: ["项目实际只有三个页面。", "最大并发，是宿舍四个人同时登录。"]
+      },
+      {
+        id: 11, chapter: 2, title: "实验报告排版", art: "report", tag: "know",
+        lines: ["答辩前一晚，组员正在为实验报告的格式发愁。嘉豪打开了熟悉的文档软件。"],
+        messages: ["页边距到底是多少？", "图表编号又乱了。"],
+        options: [
+          "照老师给的模板改，先把格式统一。",
+          "对着提交要求，一项项检查。",
+          "报告我都自己排版，那种普通格式一看就没用心。"
+        ],
+        feedback: ["他的文档第一页就编译失败。", "报错原因：少了一个右花括号。"]
+      },
+      {
+        id: 12, chapter: 2, title: "代码审查", art: "bug", tag: "know",
+        lines: ["组员发现，输入框什么都不填时，演示页面会直接垮掉。屏幕中央出现一只像素风格的小甲虫。"],
+        messages: [],
+        options: [
+          "加个提示，别让它一点就崩。",
+          "再点一次，我看看从哪里开始出的问题。",
+          "这种小问题我早就处理了，肯定不是我这边。"
+        ],
+        feedback: ["报错堆栈径直指向他的文件。", "文件名：final_version_really_good.py。"]
+      },
+      {
+        id: 13, chapter: 2, title: "问答排练", art: "qa", tag: "know",
+        lines: ["组员建议提前排练老师的提问。嘉豪认为项目里的每句话都已经记在脑子里。"],
+        messages: [],
+        options: [
+          "我们把老师可能问的三个问题过一遍。",
+          "每个问题准备一句清楚的话就够了。",
+          "问答不用准备，老师问到哪我就讲到哪，项目我很熟。"
+        ],
+        feedback: ["老师问：“数据从哪里来？”", "他从选题背景开始讲，讲到第三分钟，老师按下了下一页。"]
+      },
+      {
+        id: 14, chapter: 2, title: "创新点", art: "innovation", tag: "roast",
+        lines: ["答辩前一晚，组员问：“我们的创新点到底怎么写？”"],
+        messages: ["导师说不能只说界面好看。", "那架构图再换几个名字？"],
+        options: [
+          "写清楚我们比原来多做了什么。",
+          "参考过什么就说明白，再写自己的改进。",
+          "创新不是功能多，是让人一看就知道这东西只有我们会做。别人做小工具，我把整套都包了。"
+        ],
+        feedback: ["架构图上的模块全换了名字。", "箭头还是原来的。"]
+      },
+      {
+        id: 15, chapter: 2, title: "一句话总结", art: "defense", tag: "chuuni",
+        lines: ["答辩现场，老师问：“请用一句话总结你的项目价值。”投影仪亮着，但看起来不太稳定。"],
+        messages: [],
+        options: [
+          "它解决了课程项目中资料分散和管理混乱的小范围问题。",
+          "核心功能已经完成，部分体验还会继续完善。",
+          "我们不是在做一个系统，是在重新定义大家怎么用校园里的东西。"
+        ],
+        feedback: ["投影仪突然黑屏。", "老师说：“先重新定义一下投影供电。”"]
+      }
+    ];
+
+    const JIAHAO_SPRITE = [
+      ".....H..HHH..H......",
+      "....HHHHHHHHHHH.....",
+      "...HHHHHHHHHHHHH....",
+      "..HHHHHHHHHHHHHHH...",
+      "..HHHHHHHHHHHHHHH...",
+      "..HHSSSSSSSSSSHH....",
+      "..HHSSSSSSSSSSHH....",
+      "..HSSSSSSSSSSSSH....",
+      "..HSSSSSSSSSSSSH....",
+      "..HSSSSSSSSSSSSH....",
+      "..HSSSSSSSSSSSSH....",
+      "...HSSSSSSSSSSH.....",
+      "....SSSSSSSSSS......",
+      ".....SSSSSSSS.......",
+      "...BBBBBBBBBBBB.....",
+      "..BBBCBBBBBBBBBB....",
+      "..BBBCBBBBBBBBBB....",
+      ".SBBBCBBBBBBBBBBS...",
+      ".SBBBCBBBBBBBBBBS...",
+      ".SBBBCBBBBBBBBBBS...",
+      "..BBBCBBBBBBBBBB....",
+      "..BBBBBBBBBBBBBB....",
+      "...BBBBBBBBBBBB.....",
+      "...BBBB....BBBB.....",
+      "...BBBB....BBBB.....",
+      "...PPPPP...PPPPP....",
+      "..PPPPPPP.PPPPPPP...",
+      "..PPP.PPP.PPP.PPP...",
+      "..PPP.PPP.PPP.PPP...",
+      "...................."
+    ];
+
+    const SPRITE_COLORS = {
+      H: "#171126",
+      S: "#f3b98b",
+      G: "#50e3ff",
+      B: "#21163b",
+      C: "#69f5c1",
+      P: "#ff5d9e"
+    };
+
+    const initialGameState = () => ({
+      hui: 0,
+      level: 0,
+      chapter: 0,
+      started: false,
+      checkins: [false, false, false],
+      challengeRewards: [false, false, false],
+      captions: ["", "", ""],
+      tags: { know: 0, roast: 0, chuuni: 0 },
+      optionOrders: {},
+      lastCorrectPosition: -1
+    });
+
+    let state = initialGameState();
+    let activeTimers = [];
+    let activeRafs = [];
+    let activeKeydown = null;
+    let synthWatch = null;
+
+    const stage = document.getElementById("stage");
+    const gauge = document.getElementById("gauge");
+    const gaugeCount = document.getElementById("gaugeCount");
+    const chapterPill = document.getElementById("chapterPill");
+    const soundButton = document.getElementById("soundButton");
+    const toastEl = document.getElementById("toast");
+
+    const escapeHTML = (value) => String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    function vibrate(pattern = 8) {
+      if ("vibrate" in navigator) {
+        try { navigator.vibrate(pattern); } catch (_) {}
+      }
+    }
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.master = null;
+        this.musicGain = null;
+        this.sfxGain = null;
+        this.started = false;
+        this.muted = false;
+        this.musicTimer = null;
+        this.step = 0;
+        this.nextTime = 0;
+        this.stepDuration = 60 / 112 / 2;
+        this.melody = [
+          523.25, 0, 659.25, 783.99, 659.25, 0, 523.25, 0,
+          440.00, 0, 523.25, 659.25, 587.33, 0, 440.00, 0,
+          349.23, 0, 440.00, 523.25, 523.25, 0, 440.00, 0,
+          392.00, 0, 493.88, 587.33, 523.25, 0, 392.00, 0
+        ];
+        this.bass = [130.81, 110.00, 87.31, 98.00];
+      }
+
+      ensure() {
+        const AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtor) return false;
+        if (!this.ctx) {
+          this.ctx = new AudioCtor();
+          this.master = this.ctx.createGain();
+          this.musicGain = this.ctx.createGain();
+          this.sfxGain = this.ctx.createGain();
+          this.master.gain.value = this.muted ? 0 : 0.9;
+          this.musicGain.gain.value = 0.34;
+          this.sfxGain.gain.value = 0.8;
+          this.musicGain.connect(this.master);
+          this.sfxGain.connect(this.master);
+          this.master.connect(this.ctx.destination);
+        }
+        if (this.ctx.state === "suspended") this.ctx.resume().catch(() => {});
+        return true;
+      }
+
+      tone(freq, duration = 0.08, type = "square", gain = 0.04, when = null, slide = 0) {
+        if (!this.ensure()) return;
+        const start = when ?? this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const env = this.ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(Math.max(30, freq), start);
+        if (slide) {
+          osc.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), start + duration);
+        }
+        env.gain.setValueAtTime(0.0001, start);
+        env.gain.exponentialRampToValueAtTime(gain, start + 0.012);
+        env.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        osc.connect(env);
+        env.connect(this.sfxGain);
+        osc.start(start);
+        osc.stop(start + duration + 0.02);
+      }
+
+      noise(duration = 0.06, gain = 0.035, when = null, highpass = 900) {
+        if (!this.ensure()) return;
+        const start = when ?? this.ctx.currentTime;
+        const length = Math.max(1, Math.floor(this.ctx.sampleRate * duration));
+        const buffer = this.ctx.createBuffer(1, length, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < length; i += 1) data[i] = Math.random() * 2 - 1;
+        const source = this.ctx.createBufferSource();
+        const filter = this.ctx.createBiquadFilter();
+        const env = this.ctx.createGain();
+        source.buffer = buffer;
+        filter.type = "highpass";
+        filter.frequency.value = highpass;
+        env.gain.setValueAtTime(gain, start);
+        env.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        source.connect(filter);
+        filter.connect(env);
+        env.connect(this.sfxGain);
+        source.start(start);
+      }
+
+      click() {
+        this.tone(760, 0.028, "square", 0.018);
+      }
+
+      note(freq = 660) {
+        this.tone(freq, 0.12, "triangle", 0.06);
+        this.tone(freq * 1.5, 0.07, "square", 0.018);
+      }
+
+      correct() {
+        this.tone(523.25, 0.11, "triangle", 0.055);
+        this.tone(659.25, 0.11, "triangle", 0.055, this.ctx?.currentTime + 0.09);
+        this.tone(783.99, 0.18, "triangle", 0.06, this.ctx?.currentTime + 0.18);
+      }
+
+      wrong() {
+        this.tone(180, 0.12, "square", 0.035, null, -70);
+      }
+
+      buzz() {
+        this.tone(130, 0.18, "sawtooth", 0.028, null, 55);
+        this.tone(185, 0.14, "square", 0.018, this.ctx?.currentTime + 0.13, -30);
+      }
+
+      typingStorm() {
+        const now = this.ctx?.currentTime;
+        for (let index = 0; index < 13; index += 1) {
+          this.tone(
+            480 + (index % 4) * 85,
+            0.026,
+            "square",
+            0.018,
+            now ? now + index * 0.043 : null
+          );
+        }
+        this.noise(0.12, 0.018, now ? now + 0.18 : null, 1800);
+      }
+
+      connect() {
+        this.tone(420, 0.05, "square", 0.04);
+        this.tone(760, 0.1, "triangle", 0.055, this.ctx?.currentTime + 0.03);
+      }
+
+      shutter() {
+        this.noise(0.07, 0.07, null, 1200);
+        this.tone(120, 0.05, "square", 0.04);
+      }
+
+      success() {
+        const now = this.ctx?.currentTime;
+        [659.25, 783.99, 987.77, 1318.51].forEach((freq, index) => {
+          this.tone(freq, 0.2, "triangle", 0.05, now ? now + index * 0.075 : null);
+        });
+      }
+
+      fanfare() {
+        const now = this.ctx?.currentTime;
+        [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50].forEach((freq, index) => {
+          this.tone(freq, 0.32, index % 2 ? "triangle" : "square", 0.045, now ? now + index * 0.11 : null);
+        });
+        this.noise(0.35, 0.035, now ? now + 0.35 : null, 500);
+      }
+
+      startMusic() {
+        if (!this.ensure() || this.started) return;
+        this.started = true;
+        this.nextTime = this.ctx.currentTime + 0.08;
+        this.musicTimer = window.setInterval(() => this.scheduleMusic(), 70);
+      }
+
+      scheduleMusic() {
+        if (!this.ctx || !this.started) return;
+        while (this.nextTime < this.ctx.currentTime + 0.18) {
+          const stepIndex = this.step % this.melody.length;
+          const lead = this.melody[stepIndex];
+          if (lead) {
+            const osc = this.ctx.createOscillator();
+            const env = this.ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.value = lead;
+            env.gain.setValueAtTime(0.0001, this.nextTime);
+            env.gain.exponentialRampToValueAtTime(0.035, this.nextTime + 0.015);
+            env.gain.exponentialRampToValueAtTime(0.0001, this.nextTime + this.stepDuration * 0.82);
+            osc.connect(env);
+            env.connect(this.musicGain);
+            osc.start(this.nextTime);
+            osc.stop(this.nextTime + this.stepDuration * 0.9);
+          }
+          if (stepIndex % 4 === 0) {
+            const root = this.bass[Math.floor(stepIndex / 8) % this.bass.length];
+            const bass = this.ctx.createOscillator();
+            const bassEnv = this.ctx.createGain();
+            bass.type = "square";
+            bass.frequency.value = root;
+            bassEnv.gain.setValueAtTime(0.0001, this.nextTime);
+            bassEnv.gain.exponentialRampToValueAtTime(0.017, this.nextTime + 0.02);
+            bassEnv.gain.exponentialRampToValueAtTime(0.0001, this.nextTime + this.stepDuration * 1.3);
+            bass.connect(bassEnv);
+            bassEnv.connect(this.musicGain);
+            bass.start(this.nextTime);
+            bass.stop(this.nextTime + this.stepDuration * 1.4);
+          }
+          if (stepIndex % 2 === 1) {
+            this.noise(0.018, 0.008, this.nextTime, 3200);
+          }
+          this.nextTime += this.stepDuration;
+          this.step += 1;
+        }
+      }
+
+      setMuted(muted) {
+        this.muted = muted;
+        if (this.ensure()) {
+          this.master.gain.setTargetAtTime(muted ? 0 : 0.9, this.ctx.currentTime, 0.02);
+        }
+      }
+    }
+
+    const audio = new SoundEngine();
+
+    function clearActive() {
+      activeTimers.forEach((id) => clearTimeout(id));
+      activeTimers = [];
+      activeRafs.forEach((id) => cancelAnimationFrame(id));
+      activeRafs = [];
+      if (activeKeydown) {
+        window.removeEventListener("keydown", activeKeydown);
+        activeKeydown = null;
+      }
+      if (synthWatch) {
+        clearInterval(synthWatch);
+        synthWatch = null;
+      }
+    }
+
+    function later(fn, delay) {
+      const id = window.setTimeout(() => {
+        activeTimers = activeTimers.filter((timerId) => timerId !== id);
+        fn();
+      }, delay);
+      activeTimers.push(id);
+      return id;
+    }
+
+    function animateLoop(callback) {
+      let running = true;
+      let last = performance.now();
+      const frame = (now) => {
+        if (!running) return;
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        const shouldContinue = callback(now, dt);
+        if (shouldContinue === false) {
+          running = false;
+          return;
+        }
+        const id = requestAnimationFrame(frame);
+        activeRafs.push(id);
+      };
+      const id = requestAnimationFrame(frame);
+      activeRafs.push(id);
+      return () => { running = false; };
+    }
+
+    function setStage(html) {
+      clearActive();
+      stage.innerHTML = html;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function setChapter(chapterIndex) {
+      const chapter = CHAPTERS[chapterIndex] || CHAPTERS[0];
+      document.documentElement.style.setProperty("--accent", chapter.accent);
+      document.documentElement.style.setProperty("--accent-2", chapter.accent2);
+      document.documentElement.style.setProperty("--accent-3", chapter.accent3);
+      document.documentElement.style.setProperty("--pink", chapter.pop);
+      chapterPill.textContent = chapter.title;
+      document.body.dataset.chapter = String(chapterIndex);
+    }
+
+    function getOptionOrder(levelId) {
+      if (state.optionOrders[levelId]) return state.optionOrders[levelId];
+      const order = [0, 1, 2];
+      let correctPosition = 2;
+      do {
+        for (let index = order.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [order[index], order[swapIndex]] = [order[swapIndex], order[index]];
+        }
+        correctPosition = order.indexOf(2);
+      } while (correctPosition === state.lastCorrectPosition);
+      state.optionOrders[levelId] = order;
+      state.lastCorrectPosition = correctPosition;
+      return order;
+    }
+
+    function initGauge() {
+      gauge.innerHTML = "";
+      for (let i = 0; i < 21; i += 1) {
+        const cell = document.createElement("span");
+        cell.className = "gauge-cell";
+        cell.dataset.index = String(i);
+        gauge.appendChild(cell);
+      }
+      updateGauge();
+    }
+
+    function updateGauge(highlightIndex = -1) {
+      const cells = [...gauge.querySelectorAll(".gauge-cell")];
+      cells.forEach((cell, index) => {
+        const filled = index < state.hui;
+        cell.classList.toggle("filled", filled);
+        cell.classList.toggle("current", index === Math.max(0, state.hui - 1));
+        cell.style.background = filled ? CHAPTERS[Math.floor(index / 7)].accent : "";
+        if (index === highlightIndex) {
+          cell.style.animation = "none";
+          void cell.offsetWidth;
+          cell.style.animation = "";
+        }
+      });
+      gauge.setAttribute("aria-valuenow", String(state.hui));
+      gaugeCount.textContent = `${state.hui} / 21`;
+    }
+
+    function addHui(origin = null) {
+      state.hui = clamp(state.hui + 1, 0, 21);
+      updateGauge(state.hui - 1);
+      if (origin) burstAt(origin);
+    }
+
+    function burstAt(origin) {
+      const rect = origin.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const colors = ["var(--pink)", "var(--cyan)", "var(--lemon)", "var(--mint)", "var(--purple)"];
+      for (let i = 0; i < 14; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti";
+        piece.style.left = `${x}px`;
+        piece.style.top = `${y}px`;
+        piece.style.setProperty("--confetti-color", colors[i % colors.length]);
+        piece.style.setProperty("--dx", `${Math.round((Math.random() - 0.5) * 180)}px`);
+        piece.style.setProperty("--dy", `${Math.round(-30 - Math.random() * 130)}px`);
+        document.body.appendChild(piece);
+        window.setTimeout(() => piece.remove(), 850);
+      }
+    }
+
+    function flashScreen() {
+      const flash = document.createElement("div");
+      flash.className = "screen-flash";
+      document.body.appendChild(flash);
+      window.setTimeout(() => flash.remove(), 380);
+    }
+
+    function toast(message, duration = 1800) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      window.clearTimeout(toast._hideTimer);
+      toast._hideTimer = window.setTimeout(() => toastEl.classList.remove("show"), duration);
+    }
+
+    function drawJiahao(ctx, x, y, scale = 4, mode = "idle") {
+      ctx.save();
+      ctx.imageSmoothingEnabled = false;
+      const bob = mode === "idle" ? Math.sin(performance.now() / 280) * 0.7 : 0;
+      JIAHAO_SPRITE.forEach((row, rowIndex) => {
+        [...row].forEach((char, columnIndex) => {
+          const color = SPRITE_COLORS[char];
+          if (!color) return;
+          ctx.fillStyle = color;
+          ctx.fillRect(
+            Math.round(x + columnIndex * scale),
+            Math.round(y + rowIndex * scale + bob),
+            Math.ceil(scale),
+            Math.ceil(scale)
+          );
+        });
+      });
+      const frameSize = Math.max(1, Math.round(scale * 0.42));
+      const eyeY = y + scale * 8 + bob;
+      ctx.fillStyle = "#08050f";
+      ctx.fillRect(x + scale * 4, eyeY, scale * 5, frameSize);
+      ctx.fillRect(x + scale * 11, eyeY, scale * 5, frameSize);
+      ctx.fillRect(x + scale * 4, eyeY + scale * 2, scale * 5, frameSize);
+      ctx.fillRect(x + scale * 11, eyeY + scale * 2, scale * 5, frameSize);
+      ctx.fillRect(x + scale * 4, eyeY, frameSize, scale * 2 + frameSize);
+      ctx.fillRect(x + scale * 8, eyeY, frameSize, scale * 2 + frameSize);
+      ctx.fillRect(x + scale * 11, eyeY, frameSize, scale * 2 + frameSize);
+      ctx.fillRect(x + scale * 15, eyeY, frameSize, scale * 2 + frameSize);
+      ctx.fillRect(x + scale * 9, eyeY + scale, scale * 2, frameSize);
+      ctx.fillRect(x + scale * 2, eyeY + scale, scale * 2, frameSize);
+      ctx.fillRect(x + scale * 16, eyeY + scale, scale * 2, frameSize);
+      if (mode === "dj") {
+        ctx.fillStyle = "#ff5d9e";
+        ctx.fillRect(x - scale * 3, y + scale * 18, scale * 4, scale * 2);
+        ctx.fillRect(x + scale * 19, y + scale * 18, scale * 4, scale * 2);
+        ctx.fillStyle = "#50e3ff";
+        ctx.fillRect(x - scale * 2, y + scale * 19, scale, scale);
+        ctx.fillRect(x + scale * 20, y + scale * 19, scale, scale);
+      }
+      ctx.restore();
+    }
+
+    function drawSceneArt(canvas, level) {
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width = 900;
+      const height = canvas.height = 580;
+      const chapter = CHAPTERS[level.chapter];
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, chapter.accent2);
+      gradient.addColorStop(0.55, chapter.accent);
+      gradient.addColorStop(1, chapter.accent3);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      ctx.imageSmoothingEnabled = false;
+
+      ctx.fillStyle = "rgba(33,22,59,.12)";
+      for (let y = 0; y < height; y += 32) {
+        for (let x = 0; x < width; x += 32) {
+          if ((x / 32 + y / 32) % 3 === 0) ctx.fillRect(x, y, 8, 8);
+        }
+      }
+
+      ctx.fillStyle = "#21163b";
+      ctx.fillRect(0, height - 110, width, 110);
+      ctx.fillStyle = chapter.pop;
+      ctx.fillRect(0, height - 110, width, 14);
+      ctx.fillStyle = "#fff4c9";
+      ctx.fillRect(38, height - 82, 824, 8);
+
+      ctx.fillStyle = "rgba(255,244,201,.72)";
+      ctx.fillRect(70, 84, 470, 310);
+      ctx.fillStyle = "#21163b";
+      ctx.fillRect(70, 84, 470, 16);
+      ctx.fillStyle = chapter.pop;
+      ctx.fillRect(86, 116, 32, 32);
+      ctx.fillStyle = chapter.accent3;
+      ctx.fillRect(128, 116, 32, 32);
+      ctx.fillStyle = chapter.accent2;
+      ctx.fillRect(170, 116, 32, 32);
+
+      const drawTerminal = (tx, ty, tw, th, title) => {
+        ctx.fillStyle = "#21163b";
+        ctx.fillRect(tx, ty, tw, th);
+        ctx.fillStyle = "#50e3ff";
+        ctx.fillRect(tx + 10, ty + 10, tw - 20, 22);
+        ctx.fillStyle = "#21163b";
+        ctx.fillRect(tx + 20, ty + 18, Math.max(52, tw * 0.35), 5);
+        ctx.fillStyle = "#ffe86a";
+        ctx.font = "900 18px Consolas, monospace";
+        ctx.fillText(title, tx + 14, ty + 62);
+      };
+
+      const drawBranch = (baseX, baseY) => {
+        ctx.strokeStyle = "#21163b";
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.moveTo(baseX, baseY);
+        ctx.lineTo(baseX + 180, baseY);
+        ctx.lineTo(baseX + 180, baseY + 82);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(baseX + 90, baseY);
+        ctx.lineTo(baseX + 90, baseY - 55);
+        ctx.lineTo(baseX + 210, baseY - 55);
+        ctx.stroke();
+        [[baseX,baseY,"#69f5c1"],[baseX+180,baseY+82,"#ff5d9e"],[baseX+210,baseY-55,"#ffe86a"]].forEach(([bx,by,color]) => {
+          ctx.fillStyle = color;
+          ctx.fillRect(bx - 14, by - 14, 28, 28);
+          ctx.strokeStyle = "#21163b";
+          ctx.lineWidth = 5;
+          ctx.strokeRect(bx - 14, by - 14, 28, 28);
+        });
+      };
+
+      switch (level.art) {
+        case "phone": {
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(132, 126, 250, 378);
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(152, 154, 210, 322);
+          ["#ff5d9e","#50e3ff","#ffe86a"].forEach((color, i) => {
+            ctx.fillStyle = color;
+            ctx.fillRect(174 + (i % 2) * 72, 190 + i * 67, 115, 42);
+          });
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(164, 469, 186, 12);
+          break;
+        }
+        case "lab":
+          drawTerminal(136, 158, 290, 205, "public class Panic {");
+          drawJiahao(ctx, 470, 150, 5.4);
+          break;
+        case "dependency":
+          drawTerminal(118, 156, 300, 212, "pip install everything");
+          drawTerminal(300, 260, 266, 150, "ERROR 0x3");
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(635, 158, 130, 130);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 54px Consolas, monospace";
+          ctx.fillText("!", 684, 242);
+          break;
+        case "git":
+          drawBranch(150, 300);
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(470, 140, 270, 225);
+          ctx.fillStyle = "#ff5d9e";
+          ctx.font = "900 26px Consolas, monospace";
+          ctx.fillText("CONFLICT", 515, 194);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 15px Consolas, monospace";
+          ctx.fillText("<<<<<<< main", 510, 240);
+          ctx.fillText("=======", 510, 275);
+          ctx.fillText(">>>>>>> final", 510, 310);
+          break;
+        case "team":
+          ["#ff5d9e","#50e3ff","#ffe86a","#69f5c1"].forEach((color, i) => {
+            ctx.fillStyle = color;
+            ctx.fillRect(125 + (i % 2) * 150, 155 + Math.floor(i / 2) * 120, 120, 92);
+            ctx.strokeStyle = "#21163b";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(125 + (i % 2) * 150, 155 + Math.floor(i / 2) * 120, 120, 92);
+          });
+          drawJiahao(ctx, 550, 145, 5.2);
+          break;
+        case "performance": {
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(120, 140, 420, 300);
+          ctx.strokeStyle = "#69f5c1";
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.moveTo(150, 390);
+          ctx.lineTo(240, 330);
+          ctx.lineTo(320, 350);
+          ctx.lineTo(410, 205);
+          ctx.lineTo(505, 180);
+          ctx.stroke();
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(495, 168, 22, 22);
+          break;
+        }
+        case "keyboard": {
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(112, 122, 430, 268);
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(132, 142, 390, 228);
+          ctx.fillStyle = "#58a8ff";
+          ctx.fillRect(132, 142, 390, 42);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 20px Consolas, monospace";
+          ctx.fillText("WORD // 课程作业_最终版.docx", 154, 170);
+          ctx.fillStyle = "#382857";
+          for (let row = 0; row < 7; row += 1) {
+            ctx.fillRect(166, 210 + row * 22, 318 - (row % 3) * 44, 7);
+          }
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(118, 385, 418, 58);
+          ctx.strokeStyle = "#21163b";
+          ctx.lineWidth = 7;
+          ctx.strokeRect(118, 385, 418, 58);
+          for (let row = 0; row < 3; row += 1) {
+            for (let column = 0; column < 12; column += 1) {
+              ctx.fillStyle = (row + column) % 3 === 0 ? "#ffe86a" : "#fff4c9";
+              ctx.fillRect(132 + column * 31, 396 + row * 14, 23, 9);
+            }
+          }
+          ctx.fillStyle = "#69f5c1";
+          ctx.font = "900 28px Consolas, monospace";
+          ctx.fillText("噼里啪啦!", 252, 110);
+          break;
+        }
+        case "github":
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(130, 140, 360, 285);
+          ctx.fillStyle = "#ffe86a";
+          ctx.beginPath();
+          for (let i = 0; i < 10; i += 1) {
+            const radius = i % 2 === 0 ? 76 : 32;
+            const angle = -Math.PI / 2 + i * Math.PI / 5;
+            const sx = 310 + Math.cos(angle) * radius;
+            const sy = 276 + Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+          }
+          ctx.closePath();
+          ctx.fill();
+          break;
+        case "wifi":
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(360, 300, 90, 105);
+          ctx.strokeStyle = "#fff4c9";
+          ctx.lineWidth = 12;
+          for (let i = 1; i <= 3; i += 1) {
+            ctx.beginPath();
+            ctx.arc(405, 312, i * 46, Math.PI * 1.18, Math.PI * 1.82);
+            ctx.stroke();
+          }
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(190, 160, 110, 62);
+          ctx.fillText("2G", 220, 202);
+          break;
+        case "gpu": {
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(130, 180, 390, 205);
+          ctx.strokeStyle = "#50e3ff";
+          ctx.lineWidth = 9;
+          ctx.strokeRect(150, 200, 350, 165);
+          [230, 330, 430].forEach((cx) => {
+            ctx.beginPath();
+            ctx.arc(cx, 282, 43, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.fillStyle = "#ff5d9e";
+            ctx.fillRect(cx - 7, 235, 14, 94);
+          });
+          break;
+        }
+        case "resume":
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(145, 125, 320, 365);
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(145, 125, 320, 58);
+          ctx.fillStyle = "#21163b";
+          for (let i = 0; i < 7; i += 1) {
+            ctx.fillRect(180, 220 + i * 31, 240 - (i % 3) * 35, 9);
+          }
+          break;
+        case "report":
+          for (let i = 0; i < 3; i += 1) {
+            ctx.fillStyle = i === 2 ? "#ffe86a" : "#fff4c9";
+            ctx.fillRect(135 + i * 18, 126 + i * 14, 300, 340);
+            ctx.strokeStyle = "#21163b";
+            ctx.lineWidth = 5;
+            ctx.strokeRect(135 + i * 18, 126 + i * 14, 300, 340);
+          }
+          ctx.fillStyle = "#ff5d9e";
+          ctx.font = "900 34px Consolas, monospace";
+          ctx.fillText("}{", 242, 245);
+          break;
+        case "bug":
+          drawTerminal(120, 145, 380, 250, "undefined is not a function");
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(510, 230, 74, 88);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(522, 244, 14, 14);
+          ctx.fillRect(558, 244, 14, 14);
+          ctx.fillRect(522, 278, 50, 10);
+          break;
+        case "qa":
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(120, 145, 265, 135);
+          ctx.fillRect(290, 300, 245, 120);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 43px Consolas, monospace";
+          ctx.fillText("???", 175, 232);
+          ctx.fillText("……", 358, 380);
+          break;
+        case "innovation":
+          ["系统","工具","基础设施"].forEach((label, i) => {
+            ctx.fillStyle = ["#ff5d9e","#50e3ff","#ffe86a"][i];
+            ctx.fillRect(110 + i * 190, 190, 145, 105);
+            ctx.strokeStyle = "#21163b";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(110 + i * 190, 190, 145, 105);
+            ctx.fillStyle = "#21163b";
+            ctx.font = "900 18px 'Microsoft YaHei'";
+            ctx.fillText(label, 145 + i * 190, 250);
+            if (i < 2) {
+              ctx.font = "900 40px Consolas";
+              ctx.fillText("→", 268 + i * 190, 252);
+            }
+          });
+          break;
+        case "defense":
+        default:
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(115, 132, 450, 270);
+          ctx.fillStyle = "#382857";
+          ctx.fillRect(140, 158, 400, 218);
+          ctx.fillStyle = "#ffe86a";
+          ctx.font = "900 32px 'Microsoft YaHei'";
+          ctx.fillText("项目价值", 270, 245);
+          ctx.font = "900 17px Consolas";
+          ctx.fillText("Q & A", 334, 292);
+          break;
+      }
+
+      drawJiahao(ctx, 642, 185, 6.2, level.id === 15 ? "dj" : "idle");
+
+      ctx.fillStyle = "#fff4c9";
+      ctx.font = "900 17px Consolas, monospace";
+      ctx.fillText(`LEVEL ${String(level.id).padStart(2, "0")} // ${level.art.toUpperCase()}`, 36, 54);
+      ctx.fillStyle = "#21163b";
+      ctx.font = "900 16px 'Microsoft YaHei'";
+      ctx.fillText(level.title, 36, 79);
+    }
+
+    function renderIntro() {
+      setChapter(0);
+      setStage(`
+        <section class="screen intro-screen">
+          <div class="hero-card pixel-panel">
+            <div class="hero-kicker">COURSE PROJECT WEEK // 2026</div>
+            <h1 class="game-title">合成<span>大嘉豪</span></h1>
+            <p class="hero-lead">21 段高光，三个小挑战，一次课程设计周。<br>选出最像嘉豪的答案，把他合成到符合预期。</p>
+            <div class="hero-actions">
+              <button class="primary-button" id="startGame" type="button">开始合成</button>
+              <span class="hero-note">点击后会启用背景音乐、音效与设备震动；触屏与键盘都可游玩。</span>
+            </div>
+          </div>
+          <aside class="hero-side">
+            <div class="avatar-panel pixel-panel">
+              <canvas id="introAvatar" width="520" height="330" aria-label="黑色卷发、戴眼镜的嘉豪像素小人"></canvas>
+              <div class="avatar-caption"><span>SUBJECT: JIAHAO</span><span>STATUS: VERY CONFIDENT</span></div>
+            </div>
+            <div class="rule-panel pixel-panel">
+              <h2>通关方式</h2>
+              <ul class="rule-list">
+                <li><b>15</b><span>剧情选择，每题只有一个嘉豪答案。</span></li>
+                <li><b>03</b><span>小游戏，商场、校园和机房各一次。</span></li>
+                <li><b>03</b><span>班级群打卡，不发送就不能继续。</span></li>
+              </ul>
+            </div>
+          </aside>
+        </section>
+      `);
+      const avatar = document.getElementById("introAvatar");
+      const ctx = avatar.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+      ctx.fillStyle = "#21163b";
+      ctx.fillRect(0, 0, avatar.width, avatar.height);
+      for (let y = 20; y < 330; y += 24) {
+        for (let x = 20; x < 520; x += 24) {
+          ctx.fillStyle = (x / 24 + y / 24) % 2 ? "#4f37c8" : "#6f4be8";
+          ctx.fillRect(x, y, 12, 12);
+        }
+      }
+      drawJiahao(ctx, 172, 30, 9);
+      const startButton = document.getElementById("startGame");
+      startButton.addEventListener("click", () => {
+        audio.ensure();
+        audio.startMusic();
+        state.started = true;
+        renderChapterIntro(0);
+      });
+    }
+
+    function renderChapterIntro(chapterIndex) {
+      const chapter = CHAPTERS[chapterIndex];
+      setChapter(chapterIndex);
+      state.chapter = chapterIndex;
+      state.level = chapterIndex * 5;
+      setStage(`
+        <section class="screen chapter-screen">
+          <div class="chapter-card pixel-panel">
+            <div class="chapter-number">${chapter.number} // 7 SHARDS</div>
+            <h2 class="chapter-title">${chapter.title.replace(/^第.+章 · /, "")}</h2>
+            <p class="chapter-tagline">${chapter.tagline}</p>
+            <div class="chapter-steps">
+              <span class="chapter-step">5 次剧情选择</span>
+              <span class="chapter-step">1 个像素小游戏</span>
+              <span class="chapter-step">1 次班级群打卡</span>
+              <span class="chapter-step">+7 豪意值</span>
+            </div>
+            <button class="primary-button" id="chapterStart" type="button">进入第 ${state.level + 1} 关</button>
+          </div>
+        </section>
+      `);
+      document.getElementById("chapterStart").addEventListener("click", () => renderStory());
+    }
+
+    function renderStory() {
+      const level = LEVELS[state.level];
+      if (!level) {
+        renderSynth();
+        return;
+      }
+      setChapter(level.chapter);
+      const optionOrder = getOptionOrder(level.id);
+      const messageHTML = level.messages.length
+        ? `<div class="chat-lines">${level.messages.map((message) => `<div class="chat-line">${escapeHTML(message)}</div>`).join("")}</div>`
+        : "";
+      setStage(`
+        <section class="screen story-screen">
+          <div class="scene-card pixel-panel">
+            <div class="scene-header">
+              <span class="scene-badge">${CHAPTERS[level.chapter].short}</span>
+              <span class="level-badge">LEVEL ${String(level.id).padStart(2, "0")} / 15</span>
+            </div>
+            <canvas id="storyCanvas" width="900" height="580" aria-label="${escapeHTML(level.title)}的场景插画"></canvas>
+            <div class="scene-caption">点击选项 // 找出最符合嘉豪逻辑的回答</div>
+          </div>
+          <div class="dialog-card pixel-panel">
+            <div class="speaker">
+              <canvas class="speaker-avatar" id="speakerAvatar" width="120" height="170" aria-label="嘉豪头像"></canvas>
+              <div>
+                <p class="speaker-name">嘉豪</p>
+                <p class="speaker-role">计算机专业 / 自我评价稳定</p>
+              </div>
+            </div>
+            <h2 class="scene-title">${level.title}</h2>
+            <div class="scene-copy">
+              ${level.lines.map((line) => `<span>${escapeHTML(line)}</span>`).join("")}
+              ${messageHTML}
+            </div>
+            <div class="choices" id="choices">
+              ${optionOrder.map((originalIndex, index) => `
+                <button class="choice" type="button" data-original="${originalIndex}">
+                  <span class="choice-key">${String.fromCharCode(65 + index)}</span>
+                  <span>${escapeHTML(level.options[originalIndex])}</span>
+                </button>
+              `).join("")}
+            </div>
+            <div class="feedback" id="storyFeedback" aria-live="polite">豪意值 ${state.hui} / 21 · 选择最像嘉豪的回答。</div>
+          </div>
+        </section>
+      `);
+
+      const artCanvas = document.getElementById("storyCanvas");
+      requestAnimationFrame(() => drawSceneArt(artCanvas, level));
+      const portrait = document.getElementById("speakerAvatar");
+      const portraitCtx = portrait.getContext("2d");
+      drawJiahao(portraitCtx, 18, 2, 4.7);
+
+      const buttons = [...document.querySelectorAll(".choice")];
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          chooseStoryOption(Number(button.dataset.original), buttons);
+        });
+      });
+    }
+
+    function chooseStoryOption(index, buttons) {
+      const level = LEVELS[state.level];
+      const feedback = document.getElementById("storyFeedback");
+      if (buttons.some((button) => button.disabled)) return;
+      const selected = buttons.find((button) => Number(button.dataset.original) === index);
+
+      if (index !== 2) {
+        audio.wrong();
+        vibrate([18, 35, 18]);
+        selected.classList.add("wrong");
+        feedback.className = "feedback bad";
+        feedback.innerHTML = "系统判定：<strong>豪意值没有变化。</strong><br>你又正常了一次。请重新组织语言。";
+        later(() => selected.classList.remove("wrong"), 540);
+        return;
+      }
+
+      buttons.forEach((button) => { button.disabled = true; });
+      selected.classList.add("correct");
+      state.tags[level.tag] += 1;
+      addHui(selected);
+      audio.correct();
+      if (level.id === 6) later(() => audio.typingStorm(), 180);
+      vibrate([12, 30, 18, 30, 35]);
+      feedback.className = "feedback good";
+      feedback.innerHTML = `<strong>豪意值 +1</strong> · ${state.hui} / 21<br>${level.feedback.map(escapeHTML).join("<br>")}`;
+      later(() => {
+        if (level.id % 5 === 0) {
+          renderChallenge(level.chapter);
+        } else {
+          state.level += 1;
+          renderStory();
+        }
+      }, 1850);
+    }
+
+    function renderChallenge(chapterIndex) {
+      const chapter = CHAPTERS[chapterIndex];
+      const challenge = chapter.challenge;
+      setChapter(chapterIndex);
+      setStage(`
+        <section class="screen challenge-intro">
+          <div class="challenge-art pixel-panel">
+            <div class="challenge-glyph">${challenge.glyph}</div>
+          </div>
+          <div class="challenge-copy-card pixel-panel">
+            <span class="eyebrow">INTERLUDE ${String(chapterIndex + 1).padStart(2, "0")}</span>
+            <h2>${challenge.name}</h2>
+            <p>${challenge.description}</p>
+            <div class="challenge-hints">
+              ${challenge.hints.map((hint, index) => `<div class="challenge-hint">${index + 1}. ${hint}</div>`).join("")}
+            </div>
+            <button class="primary-button" id="challengeStart" type="button">开始挑战</button>
+          </div>
+        </section>
+      `);
+      document.getElementById("challengeStart").addEventListener("click", () => startChallenge(chapterIndex));
+    }
+
+    function startChallenge(chapterIndex) {
+      if (chapterIndex === 0) startNoteGame();
+      if (chapterIndex === 1) startSkateGame();
+      if (chapterIndex === 2) startWireGame();
+    }
+
+    function passChallenge(chapterIndex) {
+      if (!state.challengeRewards[chapterIndex]) {
+        state.challengeRewards[chapterIndex] = true;
+        addHui(document.querySelector(".game-topline") || document.body);
+      }
+      audio.shutter();
+      vibrate([20, 35, 75]);
+      flashScreen();
+      later(() => renderChallengeSuccess(chapterIndex), 340);
+    }
+
+    function renderChallengeSuccess(chapterIndex) {
+      const challenge = CHAPTERS[chapterIndex].challenge;
+      setChapter(chapterIndex);
+      setStage(`
+        <section class="screen success-screen">
+          <div class="success-card">
+            <span class="eyebrow">CHALLENGE CLEAR</span>
+            <h2>挑战通过</h2>
+            <p>${challenge.name}已完成。快门替你保留了这次高光，豪意值 +1。</p>
+            <div class="chapter-steps" style="justify-content:center;margin-bottom:22px">
+              <span class="chapter-step">豪意值 ${state.hui} / 21</span>
+              <span class="chapter-step">照片待发送</span>
+            </div>
+            <button class="primary-button" id="goCheckin" type="button">去班级群打卡</button>
+          </div>
+        </section>
+      `);
+      document.getElementById("goCheckin").addEventListener("click", () => renderCheckin(chapterIndex));
+    }
+
+    function startNoteGame() {
+      setChapter(0);
+      setStage(`
+        <section class="screen game-screen">
+          <div class="game-topline">
+            <span class="game-name">商场拍拍机 // 全部点中 5 个音符</span>
+            <span class="timer" id="gameTimer">15.0s</span>
+          </div>
+          <div class="booth-wrap">
+            <div class="booth" id="booth">
+              <div class="booth-bottom" id="noteCounter">已命中 0 / 5</div>
+            </div>
+          </div>
+        </section>
+      `);
+      const booth = document.getElementById("booth");
+      const timerEl = document.getElementById("gameTimer");
+      const counterEl = document.getElementById("noteCounter");
+      const positions = [
+        [12, 20], [58, 16], [31, 43], [68, 54], [14, 67]
+      ];
+      const frequencies = [523.25, 659.25, 783.99, 987.77, 1174.66];
+      let hits = 0;
+      let over = false;
+      const start = performance.now();
+
+      positions.forEach(([left, top], index) => {
+        const note = document.createElement("button");
+        note.type = "button";
+        note.className = "note-button";
+        note.dataset.noBaseSound = "true";
+        note.style.left = `${left}%`;
+        note.style.top = `${top}%`;
+        note.style.animationDelay = `${index * -0.13}s`;
+        note.setAttribute("aria-label", `第 ${index + 1} 个音符`);
+        note.textContent = index % 2 ? "♫" : "♪";
+        note.addEventListener("click", () => {
+          if (over || note.classList.contains("hit")) return;
+          note.classList.add("hit");
+          audio.note(frequencies[index]);
+          vibrate(12);
+          hits += 1;
+          counterEl.textContent = `已命中 ${hits} / 5`;
+          if (hits === 5) {
+            over = true;
+            counterEl.textContent = "全部命中 · SNAP!";
+            later(() => passChallenge(0), 360);
+          }
+        });
+        booth.appendChild(note);
+      });
+
+      animateLoop((now) => {
+        if (over) return false;
+        const remaining = Math.max(0, 15 - (now - start) / 1000);
+        timerEl.textContent = `${remaining.toFixed(1)}s`;
+        if (remaining <= 0) {
+          over = true;
+          audio.wrong();
+          vibrate([25, 50, 25]);
+          const overlay = document.createElement("div");
+          overlay.className = "game-overlay";
+          overlay.innerHTML = `
+            <div class="overlay-card">
+              <h2>音符溜走了</h2>
+              <p>机器表示：反应速度暂时没有达到海外账号水平。</p>
+              <button class="primary-button" id="retryNotes" type="button">再拍一次</button>
+            </div>
+          `;
+          booth.parentElement.appendChild(overlay);
+          document.getElementById("retryNotes").addEventListener("click", () => startNoteGame());
+        }
+      });
+    }
+
+    function startSkateGame() {
+      setChapter(1);
+      setStage(`
+        <section class="screen game-screen">
+          <div class="game-topline">
+            <span class="game-name">校园轮滑 // 坚持 20 秒</span>
+            <span class="timer" id="skateTimer">20.0s</span>
+          </div>
+          <div class="skate-frame" id="skateFrame">
+            <canvas id="skateCanvas" width="900" height="420" aria-label="校园轮滑小游戏"></canvas>
+            <div class="skate-hud">
+              <span class="skate-chip" id="skateHp">♥♥♥</span>
+              <span class="skate-chip">← → 换道</span>
+            </div>
+          </div>
+          <div class="skate-controls">
+            <button class="lane-button" id="laneLeft" type="button" aria-label="向左换道">←</button>
+            <button class="lane-button" id="laneRight" type="button" aria-label="向右换道">→</button>
+          </div>
+        </section>
+      `);
+      const canvas = document.getElementById("skateCanvas");
+      const ctx = canvas.getContext("2d");
+      const frame = document.getElementById("skateFrame");
+      const timerEl = document.getElementById("skateTimer");
+      const hpEl = document.getElementById("skateHp");
+      ctx.imageSmoothingEnabled = false;
+      const lanes = [180, 450, 720];
+      let lane = 1;
+      let targetX = lanes[lane];
+      let visualX = targetX;
+      let hp = 3;
+      let remaining = 20;
+      let spawnClock = 0.4;
+      let elapsed = 0;
+      let over = false;
+      let roadOffset = 0;
+      let beeEventTriggered = false;
+      let eventTextTime = 0;
+      const obstacles = [];
+      const obstacleTypes = ["pedestrian", "cart", "tree"];
+      const playerY = 318;
+
+      const move = (direction) => {
+        if (over) return;
+        const next = clamp(lane + direction, 0, 2);
+        if (next !== lane) {
+          lane = next;
+          targetX = lanes[lane];
+          audio.click();
+          vibrate(7);
+        }
+      };
+
+      document.getElementById("laneLeft").addEventListener("click", () => move(-1));
+      document.getElementById("laneRight").addEventListener("click", () => move(1));
+      canvas.addEventListener("pointerdown", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const localX = event.clientX - rect.left;
+        move(localX < rect.width / 2 ? -1 : 1);
+      });
+
+      activeKeydown = (event) => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          move(-1);
+        }
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          move(1);
+        }
+      };
+      window.addEventListener("keydown", activeKeydown);
+
+      const fail = () => {
+        if (over) return false;
+        over = true;
+        audio.wrong();
+        vibrate([28, 40, 28, 40, 45]);
+        const overlay = document.createElement("div");
+        overlay.className = "game-overlay";
+        overlay.innerHTML = `
+          <div class="overlay-card">
+            <h2>轮滑已变成步行</h2>
+            <p>材料还来得及。路线规划暂时不符合预期。</p>
+            <button class="primary-button" id="retrySkate" type="button">重新出发</button>
+          </div>
+        `;
+        frame.appendChild(overlay);
+        document.getElementById("retrySkate").addEventListener("click", () => startSkateGame());
+        return false;
+      };
+
+      const drawBeeMark = (beeX, beeY, size = 1) => {
+        ctx.fillStyle = "#fff4c9";
+        ctx.fillRect(beeX - 8 * size, beeY - 7 * size, 5 * size, 5 * size);
+        ctx.fillRect(beeX + 3 * size, beeY - 7 * size, 5 * size, 5 * size);
+        ctx.fillStyle = "#ffe86a";
+        ctx.fillRect(beeX - 9 * size, beeY - 3 * size, 18 * size, 11 * size);
+        ctx.fillStyle = "#21163b";
+        ctx.fillRect(beeX - 4 * size, beeY - 3 * size, 3 * size, 11 * size);
+        ctx.fillRect(beeX + 4 * size, beeY - 3 * size, 3 * size, 11 * size);
+        ctx.fillRect(beeX - 11 * size, beeY, 2 * size, 2 * size);
+      };
+
+      const drawObstacle = (obstacle) => {
+        const x = lanes[obstacle.lane];
+        const y = obstacle.y;
+        if (obstacle.type === "tree") {
+          ctx.fillStyle = "#7a4429";
+          ctx.fillRect(x - 9, y + 30, 18, 55);
+          ctx.fillStyle = "#3bc873";
+          ctx.fillRect(x - 42, y - 6, 84, 48);
+          ctx.fillStyle = "#69f5c1";
+          ctx.fillRect(x - 28, y - 28, 56, 32);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(x - 34, y + 34, 8, 10);
+          ctx.fillRect(x + 26, y + 34, 8, 10);
+        } else if (obstacle.type === "cart" || obstacle.type === "beecart") {
+          const isBeeCart = obstacle.type === "beecart";
+          ctx.fillStyle = isBeeCart ? "#ffe86a" : "#ff9b42";
+          ctx.fillRect(x - 46, y - 4, 92, 62);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(x - 38, y + 6, 76, 24);
+          ctx.fillStyle = "#ffe86a";
+          ctx.fillRect(x - 26, y + 11, 32, 6);
+          ctx.fillRect(x + 16, y + 11, 15, 6);
+          drawBeeMark(x + 25, y - 3, 0.8);
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(x - 34, y + 44, 20, 20);
+          ctx.fillRect(x + 14, y + 44, 20, 20);
+          ctx.fillStyle = "#fff4c9";
+          ctx.font = "900 14px 'Microsoft YaHei'";
+          ctx.fillText(isBeeCart ? "蜜蜂专送" : "外卖", x - 29, y + 25);
+        } else if (obstacle.type === "angry") {
+          ctx.strokeStyle = "#fff4c9";
+          ctx.lineWidth = 5;
+          for (let i = 0; i < 3; i += 1) {
+            ctx.beginPath();
+            ctx.moveTo(x - 30, y + 18 + i * 16);
+            ctx.lineTo(x - 58, y + 18 + i * 16);
+            ctx.stroke();
+          }
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(x - 22, y + 8, 44, 72);
+          ctx.fillStyle = "#ffbf91";
+          ctx.fillRect(x - 18, y - 20, 36, 34);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(x - 19, y - 26, 38, 12);
+          ctx.fillRect(x - 26, y + 78, 16, 30);
+          ctx.fillRect(x + 10, y + 78, 16, 30);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(x - 11, y - 8, 6, 5);
+          ctx.fillRect(x + 7, y - 8, 6, 5);
+          ctx.fillRect(x - 8, y + 2, 18, 7);
+        } else {
+          ctx.fillStyle = "#8f68ff";
+          ctx.fillRect(x - 22, y + 10, 44, 70);
+          ctx.fillStyle = "#f3b98b";
+          ctx.fillRect(x - 17, y - 18, 34, 32);
+          ctx.fillStyle = "#171126";
+          ctx.fillRect(x - 18, y - 24, 36, 12);
+          ctx.fillStyle = "#21163b";
+          ctx.fillRect(x - 25, y + 78, 16, 24);
+          ctx.fillRect(x + 9, y + 78, 16, 24);
+        }
+      };
+
+      animateLoop((now, dt) => {
+        if (over) return false;
+        elapsed += dt;
+        remaining = Math.max(0, 20 - elapsed);
+        roadOffset = (roadOffset + dt * 260) % 64;
+        visualX += (targetX - visualX) * Math.min(1, dt * 9);
+        spawnClock -= dt;
+        if (spawnClock <= 0) {
+          const obstacleLane = Math.floor(Math.random() * 3);
+          obstacles.push({
+            lane: obstacleLane,
+            y: -70,
+            type: obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)]
+          });
+          spawnClock = 0.62 + Math.random() * 0.35;
+        }
+
+        if (!beeEventTriggered && elapsed >= 6) {
+          beeEventTriggered = true;
+          eventTextTime = 3.4;
+          const eventLane = Math.floor(Math.random() * 3);
+          obstacles.push({
+            lane: eventLane,
+            y: -56,
+            type: "beecart",
+            speed: 320
+          });
+          for (let index = 0; index < 3; index += 1) {
+            obstacles.push({
+              lane: eventLane,
+              y: -132 - index * 66,
+              type: "angry",
+              speed: 360 + index * 22
+            });
+          }
+          audio.buzz();
+          vibrate([25, 30, 20, 30, 45]);
+        }
+
+        const speed = 225 + elapsed * 7;
+        for (let i = obstacles.length - 1; i >= 0; i -= 1) {
+          const obstacle = obstacles[i];
+          obstacle.y += (obstacle.speed || speed) * dt;
+          const verticalHit = obstacle.y > playerY - 38 && obstacle.y < playerY + 70;
+          const horizontalHit = Math.abs(visualX - lanes[obstacle.lane]) < 58;
+          if (verticalHit && horizontalHit) {
+            obstacles.splice(i, 1);
+            hp -= 1;
+            hpEl.textContent = `${"♥".repeat(Math.max(0, hp))}${"♡".repeat(Math.max(0, 3 - hp))}`;
+            audio.wrong();
+            vibrate([25, 30, 25]);
+            frame.animate(
+              [
+                { transform: "translateX(0)" },
+                { transform: "translateX(-8px)" },
+                { transform: "translateX(8px)" },
+                { transform: "translateX(0)" }
+              ],
+              { duration: 220, iterations: 1 }
+            );
+            if (hp <= 0) return fail();
+            continue;
+          }
+          if (obstacle.y > canvas.height + 90) obstacles.splice(i, 1);
+        }
+
+        timerEl.textContent = `${remaining.toFixed(1)}s`;
+
+        const sky = ctx.createLinearGradient(0, 0, 0, 420);
+        sky.addColorStop(0, "#50cfff");
+        sky.addColorStop(0.38, "#9ff4e5");
+        sky.addColorStop(0.39, "#ffbd55");
+        sky.addColorStop(1, "#ff6da4");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, 900, 420);
+
+        ctx.fillStyle = "rgba(255,244,201,.55)";
+        ctx.fillRect(80, 72, 120, 92);
+        ctx.fillRect(230, 42, 150, 122);
+        ctx.fillRect(590, 60, 116, 104);
+        ctx.fillRect(735, 90, 100, 74);
+        ctx.fillStyle = "#21163b";
+        for (let i = 0; i < 4; i += 1) {
+          ctx.fillRect(96 + i * 26, 90, 14, 18);
+          ctx.fillRect(247 + i * 32, 62, 15, 20);
+          ctx.fillRect(608 + i * 26, 82, 14, 18);
+        }
+
+        ctx.fillStyle = "#4e3b78";
+        ctx.fillRect(0, 156, 900, 264);
+        ctx.fillStyle = "#ffe86a";
+        ctx.fillRect(0, 156, 900, 10);
+        ctx.fillStyle = "#76e59e";
+        ctx.fillRect(0, 166, 66, 254);
+        ctx.fillRect(834, 166, 66, 254);
+
+        const sides = [34, 866];
+        sides.forEach((x, index) => {
+          [215, 338].forEach((y, treeIndex) => {
+            const offset = ((treeIndex * 73 + index * 31 + roadOffset * 0.18) % 120);
+            ctx.fillStyle = "#6c442d";
+            ctx.fillRect(x - 7, y + offset + 37, 14, 54);
+            ctx.fillStyle = treeIndex % 2 ? "#43d77d" : "#69f5c1";
+            ctx.fillRect(x - 28, y + offset, 56, 44);
+            ctx.fillStyle = "#21163b";
+            ctx.fillRect(x - 20, y + offset + 10, 10, 8);
+            ctx.fillRect(x + 10, y + offset + 10, 10, 8);
+          });
+        });
+
+        ctx.fillStyle = "#fff4c9";
+        [300, 600].forEach((x) => {
+          for (let y = 170; y < 420; y += 64) {
+            ctx.fillRect(x - 4, y + roadOffset, 8, 34);
+          }
+        });
+
+        obstacles.forEach(drawObstacle);
+
+        if (eventTextTime > 0) {
+          eventTextTime -= dt;
+          const bubbleWidth = 470;
+          const bubbleX = (canvas.width - bubbleWidth) / 2;
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(bubbleX, 64, bubbleWidth, 56);
+          ctx.strokeStyle = "#21163b";
+          ctx.lineWidth = 4;
+          ctx.strokeRect(bubbleX, 64, bubbleWidth, 56);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 18px 'Microsoft YaHei'";
+          ctx.fillText("蜜蜂之家！我辛苦那么久工资都不发给我！", bubbleX + 25, 99);
+        }
+
+        ctx.fillStyle = "rgba(33,22,59,.35)";
+        ctx.beginPath();
+        ctx.ellipse(visualX, playerY + 91, 44, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
+        drawJiahao(ctx, visualX - 33, playerY - 40, 3.3, "idle");
+
+        ctx.strokeStyle = "#fff4c9";
+        ctx.lineWidth = 5;
+        for (let i = 0; i < 3; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(visualX + 52 + i * 17, playerY + 25 + i * 15);
+          ctx.lineTo(visualX + 87 + i * 17, playerY + 25 + i * 15);
+          ctx.stroke();
+        }
+
+        if (remaining <= 0) {
+          over = true;
+          timerEl.textContent = "0.0s";
+          later(() => passChallenge(1), 260);
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function startWireGame() {
+      setChapter(2);
+      setStage(`
+        <section class="screen game-screen">
+          <div class="game-topline">
+            <span class="game-name">机房接线救场 // 接好三根线</span>
+            <span class="timer" id="wireTimer">20.0s</span>
+          </div>
+          <div class="wire-board" id="wireBoard">
+            <div class="projector">
+              <div class="projector-body">
+                <div class="projector-screen" id="projectorScreen">NO SIGNAL<br>请检查三根线</div>
+              </div>
+              <div class="projector-stand"></div>
+            </div>
+            <div class="port-row">
+              <button class="port" type="button" data-kind="power" aria-label="电源接口"><span>⚡</span>电源</button>
+              <button class="port" type="button" data-kind="network" aria-label="网络接口"><span>⌁</span>网络</button>
+              <button class="port" type="button" data-kind="display" aria-label="显示接口"><span>▣</span>显示</button>
+            </div>
+            <button class="cable" type="button" data-kind="power" data-home-left="7%" data-home-right="auto" style="left:7%;right:auto;bottom:6%;--cable-color:#ff5d9e">
+              <span class="cable-symbol">⚡</span><span>电源线</span>
+            </button>
+            <button class="cable" type="button" data-kind="network" data-home-left="42%" data-home-right="auto" style="left:42%;right:auto;bottom:6%;--cable-color:#ffe86a">
+              <span class="cable-symbol">⌁</span><span>网线</span>
+            </button>
+            <button class="cable" type="button" data-kind="display" data-home-left="auto" data-home-right="7%" style="left:auto;right:7%;bottom:6%;--cable-color:#50e3ff">
+              <span class="cable-symbol">▣</span><span>显示线</span>
+            </button>
+          </div>
+        </section>
+      `);
+      const board = document.getElementById("wireBoard");
+      const timerEl = document.getElementById("wireTimer");
+      const screen = document.getElementById("projectorScreen");
+      const cables = [...document.querySelectorAll(".cable")];
+      const ports = [...document.querySelectorAll(".port")];
+      let connected = 0;
+      let elapsed = 0;
+      let over = false;
+
+      const resetCable = (cable) => {
+        cable.classList.remove("dragging", "wrong");
+        cable.style.left = cable.dataset.homeLeft;
+        cable.style.right = cable.dataset.homeRight;
+        cable.style.top = "auto";
+        cable.style.bottom = "6%";
+      };
+
+      const finish = () => {
+        if (over) return;
+        over = true;
+        screen.classList.add("on");
+        screen.innerHTML = "<strong>BUILD SUCCESSFUL</strong><br>谢谢大家";
+        audio.success();
+        vibrate([20, 30, 50]);
+        later(() => passChallenge(2), 900);
+      };
+
+      const connect = (cable, port) => {
+        cable.classList.add("connected");
+        cable.style.pointerEvents = "none";
+        port.classList.add("active");
+        port.disabled = true;
+        connected += 1;
+        audio.connect();
+        vibrate([12, 20, 30]);
+        if (connected === 3) finish();
+      };
+
+      cables.forEach((cable) => {
+        cable.addEventListener("pointerdown", (event) => {
+          if (over || cable.classList.contains("connected")) return;
+          event.preventDefault();
+          audio.ensure();
+          vibrate(8);
+          const boardRect = board.getBoundingClientRect();
+          const cableRect = cable.getBoundingClientRect();
+          const offsetX = event.clientX - cableRect.left;
+          const offsetY = event.clientY - cableRect.top;
+          cable.classList.add("dragging");
+          cable.style.right = "auto";
+          cable.style.bottom = "auto";
+          cable.style.left = `${cableRect.left - boardRect.left}px`;
+          cable.style.top = `${cableRect.top - boardRect.top}px`;
+          try { cable.setPointerCapture(event.pointerId); } catch (_) {}
+
+          const onMove = (moveEvent) => {
+            const left = moveEvent.clientX - boardRect.left - offsetX;
+            const top = moveEvent.clientY - boardRect.top - offsetY;
+            cable.style.left = `${clamp(left, -10, boardRect.width - cable.offsetWidth + 10)}px`;
+            cable.style.top = `${clamp(top, 0, boardRect.height - cable.offsetHeight)}px`;
+          };
+
+          const onUp = (upEvent) => {
+            cable.removeEventListener("pointermove", onMove);
+            cable.removeEventListener("pointerup", onUp);
+            cable.removeEventListener("pointercancel", onUp);
+            try { cable.releasePointerCapture(event.pointerId); } catch (_) {}
+            const targetPort = ports.find((port) => {
+              if (port.disabled) return false;
+              const rect = port.getBoundingClientRect();
+              return upEvent.clientX >= rect.left - 18 &&
+                upEvent.clientX <= rect.right + 18 &&
+                upEvent.clientY >= rect.top - 18 &&
+                upEvent.clientY <= rect.bottom + 18;
+            });
+            cable.classList.remove("dragging");
+            if (targetPort && targetPort.dataset.kind === cable.dataset.kind) {
+              connect(cable, targetPort);
+            } else {
+              cable.classList.add("wrong");
+              audio.wrong();
+              vibrate(20);
+              later(() => resetCable(cable), 180);
+            }
+          };
+
+          cable.addEventListener("pointermove", onMove);
+          cable.addEventListener("pointerup", onUp);
+          cable.addEventListener("pointercancel", onUp);
+        });
+      });
+
+      animateLoop((now, dt) => {
+        if (over) return false;
+        elapsed += dt;
+        const remaining = Math.max(0, 20 - elapsed);
+        timerEl.textContent = `${remaining.toFixed(1)}s`;
+        if (remaining <= 0) {
+          over = true;
+          audio.wrong();
+          vibrate([25, 40, 25]);
+          const overlay = document.createElement("div");
+          overlay.className = "game-overlay";
+          overlay.innerHTML = `
+            <div class="overlay-card">
+              <h2>答辩仍在等待信号</h2>
+              <p>三根线中至少还有一根坚持自己的接口判断。</p>
+              <button class="primary-button" id="retryWire" type="button">重新接线</button>
+            </div>
+          `;
+          board.appendChild(overlay);
+          document.getElementById("retryWire").addEventListener("click", () => startWireGame());
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function drawSnapshot(canvas, chapterIndex) {
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width = 600;
+      const height = canvas.height = 360;
+      const chapter = CHAPTERS[chapterIndex];
+      ctx.imageSmoothingEnabled = false;
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, chapter.accent2);
+      gradient.addColorStop(0.55, chapter.accent);
+      gradient.addColorStop(1, chapter.accent3);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = "rgba(255,244,201,.16)";
+      for (let y = 0; y < height; y += 24) {
+        for (let x = 0; x < width; x += 24) {
+          if ((x / 24 + y / 24) % 4 === 0) ctx.fillRect(x, y, 7, 7);
+        }
+      }
+
+      if (chapterIndex === 0) {
+        ctx.fillStyle = "#ff5d9e";
+        ctx.fillRect(42, 34, 516, 286);
+        ctx.fillStyle = "#21163b";
+        ctx.fillRect(58, 50, 484, 254);
+        ctx.fillStyle = "#fff4c9";
+        ctx.fillRect(74, 66, 452, 222);
+        ["#ffe86a", "#50e3ff", "#ff8eba", "#69f5c1"].forEach((color, index) => {
+          ctx.fillStyle = color;
+          ctx.fillRect(208 + index * 68, 98 + (index % 2) * 82, 50, 50);
+          ctx.fillStyle = "#21163b";
+          ctx.font = "900 28px Georgia, serif";
+          ctx.fillText(index % 2 ? "♫" : "♪", 219 + index * 68, 134 + (index % 2) * 82);
+        });
+        drawJiahao(ctx, 88, 94, 4.6, "idle");
+        ctx.fillStyle = "#21163b";
+        ctx.font = "900 23px Consolas, monospace";
+        ctx.fillText("SNAP!", 430, 274);
+        ctx.fillStyle = "#ff5d9e";
+        ctx.fillRect(430, 282, 88, 8);
+      } else if (chapterIndex === 1) {
+        ctx.fillStyle = "#49cfff";
+        ctx.fillRect(0, 0, width, 152);
+        ctx.fillStyle = "#69f5c1";
+        ctx.fillRect(0, 126, width, 72);
+        ctx.fillStyle = "#4f3b7c";
+        ctx.fillRect(0, 174, width, 186);
+        ctx.fillStyle = "#ffe86a";
+        ctx.fillRect(0, 174, width, 8);
+        for (let x = 34; x < width; x += 88) {
+          ctx.fillStyle = "#ff5d9e";
+          ctx.fillRect(x, 205, 40, 46);
+          ctx.fillStyle = "#fff4c9";
+          ctx.fillRect(x + 8, 215, 24, 7);
+        }
+        ctx.fillStyle = "#3a2770";
+        ctx.fillRect(245, 214, 160, 78);
+        ctx.fillStyle = "#50e3ff";
+        ctx.fillRect(258, 227, 134, 52);
+        ctx.fillStyle = "#21163b";
+        ctx.font = "900 24px Consolas";
+        ctx.fillText("DEADLINE", 266, 260);
+        ctx.fillStyle = "#ffe86a";
+        ctx.fillRect(392, 214, 98, 35);
+        ctx.fillRect(302, 184, 84, 28);
+        drawJiahao(ctx, 350, 158, 4.5, "idle");
+        ctx.strokeStyle = "#fff4c9";
+        ctx.lineWidth = 6;
+        for (let i = 0; i < 4; i += 1) {
+          ctx.beginPath();
+          ctx.moveTo(303 - i * 12, 246 + i * 19);
+          ctx.lineTo(273 - i * 12, 246 + i * 19);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#21163b";
+        ctx.font = "900 20px 'Microsoft YaHei'";
+        ctx.fillText("材料按时送达", 398, 320);
+      } else {
+        ctx.fillStyle = "#2c225b";
+        ctx.fillRect(34, 28, 532, 288);
+        ctx.fillStyle = "#50e3ff";
+        ctx.fillRect(52, 46, 496, 20);
+        ctx.fillStyle = "#1b1726";
+        ctx.fillRect(76, 76, 388, 202);
+        const screenGradient = ctx.createLinearGradient(92, 0, 448, 0);
+        screenGradient.addColorStop(0, "#50e3ff");
+        screenGradient.addColorStop(0.33, "#ffe86a");
+        screenGradient.addColorStop(0.66, "#ff9b42");
+        screenGradient.addColorStop(1, "#ff5d9e");
+        ctx.fillStyle = screenGradient;
+        ctx.fillRect(92, 92, 356, 170);
+        ctx.fillStyle = "#21163b";
+        ctx.font = "900 26px Consolas";
+        ctx.fillText("BUILD SUCCESSFUL", 143, 172);
+        ctx.font = "900 15px Consolas";
+        ctx.fillText("0 WARNINGS, 1 VERY CONFIDENT USER", 134, 211);
+        drawJiahao(ctx, 470, 102, 4.1, "dj");
+        ctx.fillStyle = "#ffe86a";
+        ctx.fillRect(445, 310, 92, 16);
+        ctx.fillStyle = "#21163b";
+        ctx.font = "900 15px 'Microsoft YaHei'";
+        ctx.fillText("设备恢复常。", 450, 326);
+      }
+
+      ctx.strokeStyle = "#21163b";
+      ctx.lineWidth = 6;
+      ctx.strokeRect(10, 10, width - 20, height - 20);
+      ctx.fillStyle = "#21163b";
+      ctx.fillRect(10, height - 42, width - 20, 32);
+      ctx.fillStyle = "#fff4c9";
+      ctx.font = "900 14px Consolas, monospace";
+      ctx.fillText(`JIAHAO CAM // CH.0${chapterIndex + 1} // VERY CONFIDENT`, 28, height - 20);
+    }
+
+    function renderCheckin(chapterIndex) {
+      const chapter = CHAPTERS[chapterIndex];
+      setChapter(chapterIndex);
+      setStage(`
+        <section class="screen checkin-screen">
+          <div class="photo-column pixel-panel">
+            <div class="photo-frame">
+              <canvas id="snapshotCanvas" width="600" height="360" aria-label="挑战高光照片"></canvas>
+              <div class="photo-stamp">
+                <span>COURSE WEEK · DAY ${chapterIndex + 2}</span>
+                <span>SNAP 0${chapterIndex + 1}</span>
+              </div>
+            </div>
+            <div class="photo-note">本次小众爱好记录已经生成。班级群在等你配一句有个性的说明，发送后才算完成本次打卡。</div>
+          </div>
+          <div class="chat-card pixel-panel">
+            <div class="chat-top">
+              <h2 class="chat-title">班级群 · 课程设计交流群（13）</h2>
+              <span class="chat-online">模拟群聊</span>
+            </div>
+            <div class="chat-stream" id="chatStream">
+              <div class="bubble"><span class="who">班长</span>你刚才到底在忙什么？</div>
+              <div class="bubble mine"><span class="who">嘉豪</span>${escapeHTML(chapter.hobby)}。正好留下了一点记录。</div>
+              <div class="bubble"><span class="who">舍友</span>这个爱好确实很少有人主动分享。</div>
+            </div>
+            <div class="caption-wrap">
+              <label class="caption-label" for="captionInput">
+                <span>给你的小众爱好配一句文案</span>
+                <span id="captionCount">0 / 60</span>
+              </label>
+              <textarea class="caption-input" id="captionInput" maxlength="60" placeholder="例如：${escapeHTML(chapter.captions[0])}"></textarea>
+              <div class="caption-chips">
+                <button class="caption-chip" type="button" data-caption="${escapeHTML(chapter.captions[0])}">随口一提</button>
+                <button class="caption-chip" type="button" data-caption="${escapeHTML(chapter.captions[1])}">认真解释</button>
+                <button class="caption-chip" type="button" data-caption="${escapeHTML(chapter.captions[2])}">过度总结</button>
+              </div>
+              <p class="caption-error" id="captionError" role="alert"></p>
+              <div class="checkin-actions">
+                <button class="primary-button" id="sendCheckin" type="button">发送到班级群</button>
+                <button class="primary-button" id="nextChapter" type="button" hidden>${chapterIndex < 2 ? "进入下一章" : "开始合成"}</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      `);
+
+      const snapshot = document.getElementById("snapshotCanvas");
+      requestAnimationFrame(() => drawSnapshot(snapshot, chapterIndex));
+      const input = document.getElementById("captionInput");
+      const count = document.getElementById("captionCount");
+      const error = document.getElementById("captionError");
+      const stream = document.getElementById("chatStream");
+      const send = document.getElementById("sendCheckin");
+      const next = document.getElementById("nextChapter");
+
+      input.addEventListener("input", () => {
+        count.textContent = `${input.value.length} / 60`;
+        error.textContent = "";
+      });
+      document.querySelectorAll(".caption-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          input.value = chip.dataset.caption;
+          input.dispatchEvent(new Event("input"));
+          input.focus();
+        });
+      });
+
+      const addBubble = (who, text, mine = false) => {
+        const bubble = document.createElement("div");
+        bubble.className = `bubble${mine ? " mine" : ""}`;
+        const label = document.createElement("span");
+        label.className = "who";
+        label.textContent = who;
+        bubble.appendChild(label);
+        bubble.appendChild(document.createTextNode(text));
+        stream.appendChild(bubble);
+        stream.scrollTop = stream.scrollHeight;
+      };
+
+      send.addEventListener("click", () => {
+        if (state.checkins[chapterIndex] || send.disabled) return;
+        const caption = input.value.trim();
+        if (!caption) {
+          error.textContent = "照片不能没有文案。高光也需要一个解释。";
+          input.focus();
+          input.closest(".chat-card").animate(
+            [
+              { transform: "translateX(0)" },
+              { transform: "translateX(-6px)" },
+              { transform: "translateX(6px)" },
+              { transform: "translateX(0)" }
+            ],
+            { duration: 240, iterations: 1 }
+          );
+          audio.wrong();
+          vibrate([20, 35, 20]);
+          return;
+        }
+
+        state.checkins[chapterIndex] = true;
+        state.captions[chapterIndex] = caption;
+        input.disabled = true;
+        send.disabled = true;
+        send.textContent = "已发送";
+        addBubble("嘉豪", caption, true);
+        addHui(send);
+        audio.success();
+        vibrate([12, 25, 45]);
+        flashScreen();
+        error.textContent = "";
+        const feedback = document.createElement("div");
+        feedback.className = "feedback good";
+        feedback.innerHTML = `<strong>小众爱好打卡成功 · 豪意值 +1</strong><br>当前豪意值 ${state.hui} / 21。班级群已经知道你拥有这个爱好了。`;
+        document.querySelector(".checkin-actions").before(feedback);
+
+        chapter.replies.forEach(([who, text], index) => {
+          later(() => addBubble(who, text), 420 + index * 360);
+        });
+        later(() => {
+          next.hidden = false;
+          next.animate(
+            [
+              { transform: "translateY(8px)", opacity: 0 },
+              { transform: "translateY(0)", opacity: 1 }
+            ],
+            { duration: 260, easing: "steps(3, end)" }
+          );
+          toast("小众爱好已归档。下一项高光正在加载。");
+        }, 1320);
+      });
+
+      next.addEventListener("click", () => {
+        if (!state.checkins[chapterIndex]) return;
+        if (chapterIndex < 2) {
+          renderChapterIntro(chapterIndex + 1);
+        } else {
+          renderSynth();
+        }
+      });
+    }
+
+    function renderSynth() {
+      setChapter(2);
+      setStage(`
+        <section class="screen synth-screen">
+          <canvas id="synthCanvas" width="960" height="620" aria-label="大嘉豪最终合成动画"></canvas>
+          <div class="synth-overlay" id="synthOverlay">
+            <div class="feedback good" style="text-align:center">正在收集 21 段高光…</div>
+          </div>
+        </section>
+      `);
+      const canvas = document.getElementById("synthCanvas");
+      const ctx = canvas.getContext("2d");
+      const overlay = document.getElementById("synthOverlay");
+      ctx.imageSmoothingEnabled = false;
+      const start = performance.now();
+      const palette = ["#69f5c1", "#58a8ff", "#ffe86a", "#ff5d9e", "#ffb84d", "#a777ff", "#50e3ff"];
+      const shards = Array.from({ length: 21 }, (_, index) => ({
+        angle: (Math.PI * 2 * index) / 21 + Math.random() * 0.18,
+        radius: 290 + Math.random() * 230,
+        size: 18 + (index % 3) * 6,
+        color: palette[index % palette.length],
+        delay: (index % 5) * 0.05
+      }));
+      const labels = [
+        { text: "</>", x: 120, y: 150, color: "#69f5c1" },
+        { text: "GPU", x: 760, y: 138, color: "#ff5d9e" },
+        { text: "Wi-Fi", x: 82, y: 392, color: "#ffe86a" },
+        { text: "git", x: 780, y: 388, color: "#50e3ff" },
+        { text: "PPT", x: 132, y: 510, color: "#ff9b42" },
+        { text: "HDMI", x: 748, y: 510, color: "#a777ff" }
+      ];
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let endingShown = false;
+      audio.fanfare();
+      vibrate([30, 45, 35, 60, 90]);
+
+      const showEnding = () => {
+        if (endingShown) return;
+        endingShown = true;
+        overlay.innerHTML = `
+          <div class="synth-end-card">
+            <span class="eyebrow">SYNTHESIS COMPLETE</span>
+            <h2>合成完成：大嘉豪</h2>
+            <p>检测到 15 项未经证实的专业能力、3 段无人点开的小众爱好，以及全班高度一致的沉默。<br>普通实力加载失败，自信已全部安装。</p>
+            <div class="synth-tags">
+              <span class="synth-tag">豪意值 21 / 21</span>
+              <span class="synth-tag">装懂 × ${state.tags.know}</span>
+              <span class="synth-tag">拉踩 × ${state.tags.roast}</span>
+              <span class="synth-tag">中二 × ${state.tags.chuuni}</span>
+            </div>
+            <button class="primary-button" id="replayGame" type="button">再合成一次</button>
+          </div>
+        `;
+        document.getElementById("replayGame").addEventListener("click", resetGame);
+      };
+
+      animateLoop((now) => {
+        const t = (now - start) / 1000;
+        const width = canvas.width;
+        const height = canvas.height;
+        const bg = ctx.createLinearGradient(0, 0, width, height);
+        bg.addColorStop(0, "#251451");
+        bg.addColorStop(0.42, "#5b28ca");
+        bg.addColorStop(0.7, "#e33d91");
+        bg.addColorStop(1, "#ff9d46");
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = "rgba(255,255,255,.1)";
+        for (let y = 0; y < height; y += 26) {
+          for (let x = 0; x < width; x += 26) {
+            const pulse = (Math.sin(t * 2 + x * 0.04 + y * 0.03) + 1) * 0.5;
+            if ((x / 26 + y / 26) % 3 === 0 && pulse > 0.55) ctx.fillRect(x, y, 7, 7);
+          }
+        }
+
+        const centerX = width / 2;
+        const centerY = 282;
+        const ring = ctx.createRadialGradient(centerX, centerY, 10, centerX, centerY, 310);
+        ring.addColorStop(0, "rgba(255,248,207,.48)");
+        ring.addColorStop(0.42, "rgba(80,227,255,.16)");
+        ring.addColorStop(1, "rgba(80,227,255,0)");
+        ctx.fillStyle = ring;
+        ctx.fillRect(0, 0, width, height);
+
+        shards.forEach((shard) => {
+          const progress = clamp((t - shard.delay) / 2.05, 0, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const radius = shard.radius * (1 - eased);
+          const angle = shard.angle + (1 - eased) * Math.PI * 0.5;
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          ctx.fillStyle = shard.color;
+          ctx.fillRect(x - shard.size / 2, y - shard.size / 2, shard.size, shard.size);
+          ctx.strokeStyle = "#21163b";
+          ctx.lineWidth = 3;
+          ctx.strokeRect(x - shard.size / 2, y - shard.size / 2, shard.size, shard.size);
+        });
+
+        if (t > 1.25) {
+          const assembly = clamp((t - 1.25) / 1.25, 0, 1);
+          const eased = reducedMotion ? 1 : 1 - Math.pow(1 - assembly, 3);
+          const scale = 1.8 + eased * 10.2;
+          const spriteWidth = 20 * scale;
+          const spriteHeight = 29 * scale;
+          const x = centerX - spriteWidth / 2;
+          const y = centerY - spriteHeight / 2 + 26;
+          ctx.save();
+          ctx.globalAlpha = 0.25 + eased * 0.75;
+          ctx.shadowColor = "#50e3ff";
+          ctx.shadowBlur = 28 + Math.sin(t * 5) * 10;
+          drawJiahao(ctx, x, y, scale, t > 3.4 ? "dj" : "idle");
+          ctx.restore();
+
+          if (t > 2.3) {
+            labels.forEach((item, index) => {
+              const orbit = t * 0.35 + index * 1.05;
+              const lx = centerX + Math.cos(orbit) * (330 + (index % 2) * 30);
+              const ly = centerY + Math.sin(orbit * 0.8) * 205;
+              ctx.fillStyle = item.color;
+              ctx.fillRect(lx - 36, ly - 20, 72, 40);
+              ctx.strokeStyle = "#21163b";
+              ctx.lineWidth = 4;
+              ctx.strokeRect(lx - 36, ly - 20, 72, 40);
+              ctx.fillStyle = "#21163b";
+              ctx.font = "900 15px Consolas, monospace";
+              ctx.textAlign = "center";
+              ctx.fillText(item.text, lx, ly + 5);
+              ctx.textAlign = "left";
+            });
+          }
+
+          if (t > 3.2) {
+            ctx.fillStyle = "#fff4c9";
+            ctx.strokeStyle = "#21163b";
+            ctx.lineWidth = 4;
+            ctx.fillRect(72, 72, 240, 58);
+            ctx.strokeRect(72, 72, 240, 58);
+            ctx.fillStyle = "#21163b";
+            ctx.font = "900 17px 'Microsoft YaHei'";
+            ctx.fillText("这个结果，完全在预期内。", 92, 109);
+
+            ctx.fillStyle = "#69f5c1";
+            ctx.fillRect(656, 82, 230, 54);
+            ctx.strokeRect(656, 82, 230, 54);
+            ctx.fillStyle = "#21163b";
+            ctx.font = "900 15px Consolas, monospace";
+            ctx.fillText("BUILD SUCCESSFUL", 686, 116);
+          }
+
+          if (t > 4.2) {
+            ctx.fillStyle = "#ffe86a";
+            ctx.fillRect(302, 526, 356, 54);
+            ctx.strokeStyle = "#21163b";
+            ctx.lineWidth = 5;
+            ctx.strokeRect(302, 526, 356, 54);
+            ctx.fillStyle = "#21163b";
+            ctx.font = "900 26px 'Microsoft YaHei'";
+            ctx.textAlign = "center";
+            ctx.fillText("合成大嘉豪", width / 2, 563);
+            ctx.textAlign = "left";
+          }
+        }
+
+        if (t > 5.1) showEnding();
+        return true;
+      });
+
+      if (reducedMotion) {
+        later(showEnding, 300);
+      }
+    }
+
+    function resetGame() {
+      state = initialGameState();
+      initGauge();
+      setChapter(0);
+      renderIntro();
+      toast("进度已重置。嘉豪重新回到环境配置阶段。");
+    }
+
+    soundButton.addEventListener("click", () => {
+      const willMute = !audio.muted;
+      audio.setMuted(willMute);
+      soundButton.setAttribute("aria-pressed", String(!willMute));
+      soundButton.setAttribute("aria-label", willMute ? "开启声音" : "关闭声音");
+      soundButton.textContent = willMute ? "×" : "♪";
+      if (!willMute) audio.click();
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      const control = event.target.closest("button, .choice, .caption-chip");
+      if (!control) return;
+      audio.ensure();
+      vibrate(8);
+      if (!control.closest("[data-no-base-sound]")) audio.click();
+    }, { passive: true });
+
+    initGauge();
+    setChapter(0);
+    renderIntro();
+  </script>
+</body>
+</html>
